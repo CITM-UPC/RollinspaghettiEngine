@@ -5,6 +5,10 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpaghettiEngine", "SpaghettiEngine\SpaghettiEngine.vcxproj", "{30FA58C4-D713-4D4B-9ACA-7DA1AB1AD881}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpaghettiEditor", "SpaghettiEditor\SpaghettiEditor.vcxproj", "{AD9F2F0C-48DD-4C8F-8846-A2ACFA6ECF87}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Spaghetti_Game", "SpaghettiGame\SpaghettiGame.vcxproj", "{44770F99-9DF7-4463-9183-EC3BE50971C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +25,18 @@ Global
 		{30FA58C4-D713-4D4B-9ACA-7DA1AB1AD881}.Release|x64.Build.0 = Release|x64
 		{30FA58C4-D713-4D4B-9ACA-7DA1AB1AD881}.Release|x86.ActiveCfg = Release|Win32
 		{30FA58C4-D713-4D4B-9ACA-7DA1AB1AD881}.Release|x86.Build.0 = Release|Win32
+		{AD9F2F0C-48DD-4C8F-8846-A2ACFA6ECF87}.Debug|x64.ActiveCfg = Debug|x64
+		{AD9F2F0C-48DD-4C8F-8846-A2ACFA6ECF87}.Debug|x64.Build.0 = Debug|x64
+		{AD9F2F0C-48DD-4C8F-8846-A2ACFA6ECF87}.Debug|x86.ActiveCfg = Debug|x64
+		{AD9F2F0C-48DD-4C8F-8846-A2ACFA6ECF87}.Release|x64.ActiveCfg = Release|x64
+		{AD9F2F0C-48DD-4C8F-8846-A2ACFA6ECF87}.Release|x64.Build.0 = Release|x64
+		{AD9F2F0C-48DD-4C8F-8846-A2ACFA6ECF87}.Release|x86.ActiveCfg = Release|x64
+		{44770F99-9DF7-4463-9183-EC3BE50971C4}.Debug|x64.ActiveCfg = Debug|x64
+		{44770F99-9DF7-4463-9183-EC3BE50971C4}.Debug|x64.Build.0 = Debug|x64
+		{44770F99-9DF7-4463-9183-EC3BE50971C4}.Debug|x86.ActiveCfg = Debug|x64
+		{44770F99-9DF7-4463-9183-EC3BE50971C4}.Release|x64.ActiveCfg = Release|x64
+		{44770F99-9DF7-4463-9183-EC3BE50971C4}.Release|x64.Build.0 = Release|x64
+		{44770F99-9DF7-4463-9183-EC3BE50971C4}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
