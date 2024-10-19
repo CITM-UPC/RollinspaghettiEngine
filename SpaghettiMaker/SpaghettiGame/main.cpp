@@ -1,5 +1,6 @@
 #include <iostream>
-#include "..\SpaghettiEngine/GameObject.h"
+#include "SpaghettiEngine/GameObject.h"
+#include "imgui.h"
 
 using namespace std;
 

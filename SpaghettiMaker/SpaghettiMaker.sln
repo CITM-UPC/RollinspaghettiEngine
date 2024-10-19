@@ -9,6 +9,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpaghettiEditor", "Spaghett
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Spaghetti_Game", "SpaghettiGame\SpaghettiGame.vcxproj", "{44770F99-9DF7-4463-9183-EC3BE50971C4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{8DF85E65-994A-462E-A110-846D1900FEFD}"
+	ProjectSection(SolutionItems) = preProject
+		..\vcpkg.json = ..\vcpkg.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
