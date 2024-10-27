@@ -2,36 +2,61 @@
 #include "SpaghettiEngine/GameObject.h"
 #include "imgui.h"
 #include "SDL2/SDL_video.h"
-
+#include <glm/glm.hpp>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 using namespace std;
 
-int main()
-{
-	SDL_Window* _window = nullptr;
-	void* _ctx = nullptr;
+static void init_opengl() {
+	glewInit();
 
-	unsigned short _width = 800;
-	unsigned short _height = 600;
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+	glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_POINT_SMOOTH);
 
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-    _window = SDL_CreateWindow("NYUNITY", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _width, _height, SDL_WINDOW_OPENGL);
-    if (!_window) throw exception(SDL_GetError());
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
 
-    _ctx = SDL_GL_CreateContext(_window);
-    if (!_ctx) throw exception(SDL_GetError());
-    if (SDL_GL_MakeCurrent(_window, _ctx) != 0) throw exception(SDL_GetError());
-    if (SDL_GL_SetSwapInterval(1) != 0) throw exception(SDL_GetError());
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 
+	glClearColor(0.5, 0.5, 0.5, 1.0);
+}
 
-	GameObject go;
-	go.paint();
-	while (true)
-	{
-		
+static void drawFloorGrid(int size, double step) {
+	glColor3ub(0, 0, 0);
+	glBegin(GL_LINES);
+	for (double i = -size; i <= size; i += step) {
+		glVertex3d(i, 0, -size);
+		glVertex3d(i, 0, size);
+		glVertex3d(-size, 0, i);
+		glVertex3d(size, 0, i);
 	}
+	glEnd();
+}
+
+static void display_func() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_MODELVIEW);
+	drawFloorGrid(16, 0.25);
+	glColor3ub(255, 255, 255);
+	glutSwapBuffers();
+}
+
+int main(int argc, char* argv[])
+{
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitWindowSize(1280, 720);
+	glutCreateWindow("NYUNITY");
+	// Init OpenGL
+	init_opengl();
+
+	glutDisplayFunc(display_func);
+	
+	glutMainLoop();
+
 	return 0;
 }
