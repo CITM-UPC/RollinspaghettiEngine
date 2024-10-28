@@ -1,32 +1,32 @@
-#include <iostream>
-#include "SpaghettiEngine/GameObject.h"
-#include "imgui.h"
-#include "SDL2/SDL_video.h"
-#include <glm/glm.hpp>
 #include <GL/glew.h>
-#include <GL/freeglut.h>
-#include "SpaghettiEngine/Camera.h"
+#include <chrono>
+#include <thread>
+#include <exception>
+#include <glm/glm.hpp>
+#include "spaghettiEngine/MyGUI.h"
+#include "SpaghettiEngine/Mywindow.h"
 using namespace std;
 
-static bool paused = true;
-static Camera camera;
+using hrclock = chrono::high_resolution_clock;
+using u8vec4 = glm::u8vec4;
+using ivec2 = glm::ivec2;
+using vec3 = glm::dvec3;
 
-static void init_opengl() {
+static const ivec2 WINDOW_SIZE(1280, 720);
+static const auto FPS = 60;
+static const auto FRAME_DT = 1.0s / FPS;
+
+static void init_openGL() {
 	glewInit();
-
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_POINT_SMOOTH);
-
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-
+	if (!GLEW_VERSION_3_0) throw exception("OpenGL 3.0 API is not available.");
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-
 	glClearColor(0.5, 0.5, 0.5, 1.0);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glScaled(1.0, (double)WINDOW_SIZE.x / WINDOW_SIZE.y, 1.0);
+
+	glMatrixMode(GL_MODELVIEW);
 }
 
 static void drawFloorGrid(int size, double step) {
@@ -41,49 +41,29 @@ static void drawFloorGrid(int size, double step) {
 	glEnd();
 }
 
+
 static void display_func() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-
-	drawFloorGrid(16, 0.25);
-	glColor3ub(255, 255, 255);
-	glutSwapBuffers();
+	drawFloorGrid(26, 1.0);
 }
 
-
-static void reshape_func(int width, int height) {
-	glViewport(0, 0, width, height);
-	camera.aspect = static_cast<double>(width) / height;
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(&camera.projection()[0][0]);
-}
-
-
-static void mouseWheel_func(int wheel, int direction, int x, int y) {
-	camera.transform().translate(vec3(0, 0, direction * 0.1));
-}
-
-
-int main(int argc, char* argv[])
-{
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-	glutInitWindowSize(1280, 720);
-	glutCreateWindow("NYUNITY");
-	// Init OpenGL
-	init_opengl();
-
-	// Init camera
-	camera.transform().pos() = vec3(0, 1, 4);
-	camera.transform().rotate(glm::radians(180.0), vec3(0, 1, 0));
+int main(int argc, char** argv) {
+	MyWindow window("ImGUI with SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
+	MyGUI gui(window.windowPtr(), window.contextPtr());
 	
-	
-	
-	glutMouseWheelFunc(mouseWheel_func);
 
-	glutDisplayFunc(display_func);
-	
-	glutMainLoop();
+
+	init_openGL();
+
+	while (window.processEvents(&gui) && window.isOpen()) {
+		const auto t0 = hrclock::now();
+		display_func();
+		gui.render();
+		window.swapBuffers();
+		const auto t1 = hrclock::now();
+		const auto dt = t1 - t0;
+		if (dt < FRAME_DT) this_thread::sleep_for(FRAME_DT - dt);
+	}
 
 	return 0;
 }

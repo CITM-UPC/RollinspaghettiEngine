@@ -22,6 +22,9 @@
     <Filter Include="Editor\Windows">
       <UniqueIdentifier>{1fe180ae-fc09-4920-9793-4578df70d587}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{e8537973-9149-475e-a88d-e7f4df042fd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -54,6 +57,12 @@
     <ClInclude Include="InspectorWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="MyGui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Mywindow.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp">
@@ -82,6 +91,12 @@
     </ClCompile>
     <ClCompile Include="InspectorWindow.cpp">
       <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="MyGui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="MyWindow.cpp">
+      <Filter>ImGui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

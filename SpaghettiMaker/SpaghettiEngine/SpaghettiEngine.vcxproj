@@ -26,6 +26,8 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="HierarchyWindow.h" />
     <ClInclude Include="InspectorWindow.h" />
+    <ClInclude Include="MyGui.h" />
+    <ClInclude Include="Mywindow.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="types.h" />
@@ -38,6 +40,8 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="HierarchyWindow.cpp" />
     <ClCompile Include="InspectorWindow.cpp" />
+    <ClCompile Include="MyGui.cpp" />
+    <ClCompile Include="MyWindow.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
   </ItemGroup>
