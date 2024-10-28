@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include "spaghettiEngine/MyGUI.h"
 #include "SpaghettiEngine/Mywindow.h"
+#include "SpaghettiEngine/ConsoleWindow.h"
 using namespace std;
 
 using hrclock = chrono::high_resolution_clock;
@@ -49,21 +50,23 @@ static void display_func() {
 
 int main(int argc, char** argv) {
 	MyWindow window("ImGUI with SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
-	MyGUI gui(window.windowPtr(), window.contextPtr());
-	
+	//MyGUI gui(window.windowPtr(), window.contextPtr());
+	ConsoleWindow console(window.windowPtr(), window.contextPtr());
 
 
 	init_openGL();
 
-	while (window.processEvents(&gui) && window.isOpen()) {
+	while (window.processEvents(&console) && window.isOpen()) {
 		const auto t0 = hrclock::now();
 		display_func();
-		gui.render();
+		console.render();
 		window.swapBuffers();
 		const auto t1 = hrclock::now();
 		const auto dt = t1 - t0;
 		if (dt < FRAME_DT) this_thread::sleep_for(FRAME_DT - dt);
 	}
+
+
 
 	return 0;
 }
