@@ -37,12 +37,27 @@ void ConsoleWindow::render() {
     ImGui::SliderFloat("Slider", &sliderValue, 0.0f, 1.0f);  // Example slider
     ImGui::Checkbox("Check Me!", &checkboxValue);  // Example checkbox
 
-
-
-
-    if (ImGui::Button("GitHub Link")) {  // Example button
-        // Redirect to a URL when the button is pressed
+    // Add the "GitHub Link" button
+    if (ImGui::Button("GitHub Link")) {
         SDL_OpenURL("https://github.com/CITM-UPC/RollinspaghettiEngine");  // Replace with your actual URL
+    }
+
+    // Add the "About Us" button
+    if (ImGui::Button("About Us")) {
+        ImGui::OpenPopup("AboutUsPopup");  // Open the About Us popup
+    }
+
+    // Define the About Us popup
+    if (ImGui::BeginPopupModal("AboutUsPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Rollinspaghetti Engine\nVersion 1.0\n\nA custom game engine developed by Yiwey Ye, Andrea Dona & Pablo Longaron");
+        ImGui::Text("This engine is designed to practice the knowledge learned in class,");
+        ImGui::Text("providing tools for rendering and loading FBX.");
+
+        if (ImGui::Button("Close")) {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
     }
 
     ImGui::End();  // End the ImGui window
