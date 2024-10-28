@@ -25,11 +25,11 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{e8537973-9149-475e-a88d-e7f4df042fd8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{c9a2ff9d-02ac-459e-bbba-e61c65afe1ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -63,11 +63,11 @@
     <ClInclude Include="Mywindow.h">
       <Filter>ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
@@ -97,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="MyWindow.cpp">
       <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
