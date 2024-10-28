@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 
+// Forward declaration
 class GameObject;
 
 class Component {
@@ -27,7 +28,7 @@ public:
     virtual void OnInspectorGUI() {} // Called when component is selected in inspector
 
     // Getters/Setters
-    bool IsActive() const { return _active && _owner && _owner->IsActive(); }
+    bool IsActive() const;  // Moved to cpp
     void SetActive(bool active) {
         if (_active != active) {
             _active = active;

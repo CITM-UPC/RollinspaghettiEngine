@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <typeinfo>
+#include <algorithm>
 
 class GameObject {
 private:
@@ -97,11 +98,11 @@ public:
         }
     }
 
+	void paint();
+
     // Getters
     const std::string& GetName() const { return _name; }
     GameObject* GetParent() const { return _parent; }
     const std::vector<std::shared_ptr<GameObject>>& GetChildren() const { return _children; }
     const std::vector<ComponentPtr>& GetComponents() const { return _components; }
-
-	void paint();
 };
