@@ -5,7 +5,8 @@
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_opengl3.h>
-
+#include <vector>
+#include <chrono>
 
 ConsoleWindow::ConsoleWindow(SDL_Window* window, void* context) {
     IMGUI_CHECKVERSION();
@@ -16,6 +17,9 @@ ConsoleWindow::ConsoleWindow(SDL_Window* window, void* context) {
     ImGui::StyleColorsDark();
     ImGui_ImplSDL2_InitForOpenGL(window, context);
     ImGui_ImplOpenGL3_Init();
+    
+    // Initialize FPS tracking variables
+    lastFrameTime = std::chrono::high_resolution_clock::now();
 }
 
 ConsoleWindow::~ConsoleWindow() {
@@ -50,9 +54,9 @@ void ConsoleWindow::render() {
 
     // About Us popup
     if (ImGui::BeginPopupModal("AboutUsPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Rollinspaghetti Engine\nVersion 1.0\n\nA custom game engine developed by CITM-UPC.");
-        ImGui::Text("This engine is designed to simplify game development,");
-        ImGui::Text("providing tools for rendering, physics, and more.");
+        ImGui::Text("Rollinspaghetti Engine\nVersion 1.0\n\nA custom game engine developed by Yiwei Ye, Andrea Dona y Pablo Longaron");
+        ImGui::Text("This engine is designed to show our learning in the programming area,");
+        ImGui::Text("providing tools for rendering and loading textures");
 
         if (ImGui::Button("Close")) {
             ImGui::CloseCurrentPopup();
@@ -72,7 +76,6 @@ void ConsoleWindow::render() {
         ImGui::Text("Hardware and Software Information:");
 
         // CPU and GPU information
-      
         ImGui::Text("CPU Cores: %d", SDL_GetCPUCount());
         ImGui::Text("System RAM: %d MB", SDL_GetSystemRAM());
         ImGui::Text("CPU Cache Line Size: %d bytes", SDL_GetCPUCacheLineSize());
@@ -89,7 +92,6 @@ void ConsoleWindow::render() {
         const GLubyte* glVersion = glGetString(GL_VERSION);
         ImGui::Text("OpenGL Version: %s", glVersion);
 
-
         // Close button for System Info popup
         if (ImGui::Button("Close")) {
             ImGui::CloseCurrentPopup();
@@ -97,6 +99,22 @@ void ConsoleWindow::render() {
 
         ImGui::EndPopup();
     }
+
+    // FPS calculation and graph
+    auto now = std::chrono::high_resolution_clock::now();
+    float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(now - lastFrameTime).count();
+    lastFrameTime = now;
+
+    // Calculate FPS and store in buffer
+    float fps = 1.0f / deltaTime;
+    if (fpsHistory.size() >= maxFPSHistorySize) {
+        fpsHistory.erase(fpsHistory.begin());
+    }
+    fpsHistory.push_back(fps);
+
+    // Display FPS as a graph
+    ImGui::Text("FPS: %.1f", fps);  // Display current FPS
+    ImGui::PlotLines("FPS History", fpsHistory.data(), fpsHistory.size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 100));
 
     ImGui::End();  // End the ImGui window
 

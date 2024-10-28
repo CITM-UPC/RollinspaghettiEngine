@@ -1,6 +1,8 @@
 #pragma once
 
 #include "MyWindow.h"
+#include <vector>
+#include <chrono>
 
 class ConsoleWindow : public IEventProcessor
 {
@@ -18,6 +20,11 @@ private:
 	float sliderValue = 0.5f;  // Initial value for the slider
 	bool checkboxValue = false;  // Initial value for the checkbox
 	bool buttonPressed = false;  // Track if button was pressed
+	// Maximum number of FPS values to store for the graph
+	static const int maxFPSHistorySize = 100;
 
+	// Variables for FPS calculation and history storage
+	std::chrono::high_resolution_clock::time_point lastFrameTime;  // Last frame time
+	std::vector<float> fpsHistory;  // Stores recent FPS values for the graph
 };
 
