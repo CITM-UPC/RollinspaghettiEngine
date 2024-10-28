@@ -66,6 +66,12 @@
     <ClInclude Include="Camera.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="MeshComponent.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -99,6 +105,12 @@
       <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshComponent.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
