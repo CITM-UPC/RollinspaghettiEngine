@@ -12,6 +12,7 @@
 			"features": [ "sdl2-binding", "opengl3-binding" ]
 		},
 		"glm",
-		"sdl2-image"
+		"sdl2-image",
+		"devil"
 	]
 }
