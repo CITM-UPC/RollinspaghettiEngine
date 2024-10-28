@@ -3,6 +3,9 @@
 #include "types.h"
 #include <vector>
 #include <memory>
+#include <glm/vec2.hpp> // Include GLM vec2
+#include <glm/vec3.hpp> // Include GLM vec3
+
 
 struct Vertex {
     vec3 position;

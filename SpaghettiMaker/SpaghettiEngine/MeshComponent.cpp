@@ -1,3 +1,4 @@
+// SpaghettiEngine/Graphics/MeshComponent.cpp
 #include "MeshComponent.h"
 #include "GameObject.h"
 #include "TransformComponent.h"
@@ -94,7 +95,8 @@ void MeshComponent::OnUpdate() {
 
         for (const auto& vertex : _vertices) {
             vec3 start = vertex.position;
-            vec3 end = start + (vertex.normal * _normalLength);
+            // Fixed: Multiply vec3 by scalar using proper GLM syntax
+            vec3 end = start + (vertex.normal * static_cast<double>(_normalLength));
 
             glVertex3dv(glm::value_ptr(start));
             glVertex3dv(glm::value_ptr(end));
