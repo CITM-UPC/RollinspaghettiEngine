@@ -33,6 +33,9 @@
     <ClInclude Include="GameObject.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="TransformComponent.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp">
@@ -45,6 +48,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponent.cpp">
       <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
