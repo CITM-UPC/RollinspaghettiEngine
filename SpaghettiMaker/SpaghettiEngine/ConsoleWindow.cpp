@@ -1,10 +1,11 @@
 #include "ConsoleWindow.h"
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_opengl.h>
-#include <SDL2/SDL.h> // Add this for SDL_OpenURL
+#include <SDL2/SDL.h> // For SDL_OpenURL and hardware information
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_opengl3.h>
+
 
 ConsoleWindow::ConsoleWindow(SDL_Window* window, void* context) {
     IMGUI_CHECKVERSION();
@@ -37,22 +38,59 @@ void ConsoleWindow::render() {
     ImGui::SliderFloat("Slider", &sliderValue, 0.0f, 1.0f);  // Example slider
     ImGui::Checkbox("Check Me!", &checkboxValue);  // Example checkbox
 
-    // Add the "GitHub Link" button
+    // GitHub Link button
     if (ImGui::Button("GitHub Link")) {
         SDL_OpenURL("https://github.com/CITM-UPC/RollinspaghettiEngine");  // Replace with your actual URL
     }
 
-    // Add the "About Us" button
+    // About Us button
     if (ImGui::Button("About Us")) {
         ImGui::OpenPopup("AboutUsPopup");  // Open the About Us popup
     }
 
-    // Define the About Us popup
+    // About Us popup
     if (ImGui::BeginPopupModal("AboutUsPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Rollinspaghetti Engine\nVersion 1.0\n\nA custom game engine developed by Yiwey Ye, Andrea Dona & Pablo Longaron");
-        ImGui::Text("This engine is designed to practice the knowledge learned in class,");
-        ImGui::Text("providing tools for rendering and loading FBX.");
+        ImGui::Text("Rollinspaghetti Engine\nVersion 1.0\n\nA custom game engine developed by CITM-UPC.");
+        ImGui::Text("This engine is designed to simplify game development,");
+        ImGui::Text("providing tools for rendering, physics, and more.");
 
+        if (ImGui::Button("Close")) {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+
+    // System Info button
+    if (ImGui::Button("System Info")) {
+        ImGui::OpenPopup("SystemInfoPopup");  // Open the System Info popup
+    }
+
+    // System Info popup
+    if (ImGui::BeginPopupModal("SystemInfoPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        // Display hardware and software information
+        ImGui::Text("Hardware and Software Information:");
+
+        // CPU and GPU information
+      
+        ImGui::Text("CPU Cores: %d", SDL_GetCPUCount());
+        ImGui::Text("System RAM: %d MB", SDL_GetSystemRAM());
+        ImGui::Text("CPU Cache Line Size: %d bytes", SDL_GetCPUCacheLineSize());
+
+        // SDL Version
+        SDL_version compiled, linked;
+        SDL_VERSION(&compiled);
+        SDL_GetVersion(&linked);
+        ImGui::Text("SDL Version: %d.%d.%d (compiled), %d.%d.%d (linked)",
+            compiled.major, compiled.minor, compiled.patch,
+            linked.major, linked.minor, linked.patch);
+
+        // OpenGL Version
+        const GLubyte* glVersion = glGetString(GL_VERSION);
+        ImGui::Text("OpenGL Version: %s", glVersion);
+
+
+        // Close button for System Info popup
         if (ImGui::Button("Close")) {
             ImGui::CloseCurrentPopup();
         }
