@@ -3,6 +3,8 @@
 #include <thread>
 #include <exception>
 #include <glm/glm.hpp>
+#include "IL/il.h"
+#include "IL/ilu.h"
 #include "spaghettiEngine/MyGUI.h"
 #include "SpaghettiEngine/Mywindow.h"
 #include "SpaghettiEngine/ConsoleWindow.h"
@@ -55,6 +57,9 @@ int main(int argc, char** argv) {
 
 
 	init_openGL();
+	//DevIL initialization
+	ilInit();
+	iluInit();
 
 	while (window.processEvents(&console) && window.isOpen()) {
 		const auto t0 = hrclock::now();

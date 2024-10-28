@@ -4,6 +4,7 @@
 #include "IL/ilu.h"
 #include <vector>
 #include <iostream>
+#include <filesystem>
 
 bool Texture::LoadFromFile(const std::string& path) {
     Cleanup();
@@ -14,8 +15,12 @@ bool Texture::LoadFromFile(const std::string& path) {
     ilGenImages(1, &imageID);
     ilBindImage(imageID);
 
+    // Convert path to wstring for DevIL
+    std::filesystem::path fsPath(path);
+    std::wstring widePath = fsPath.wstring();
+
     // Load image
-    if (!ilLoadImage(path.c_str())) {
+    if (!ilLoadImage(widePath.c_str())) {
         std::cerr << "Failed to load texture: " << path << std::endl;
         ilDeleteImages(1, &imageID);
         return false;
