@@ -78,6 +78,9 @@
     <ClInclude Include="MaterialComponent.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -123,6 +126,9 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="MaterialComponent.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
