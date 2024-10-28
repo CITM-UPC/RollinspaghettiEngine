@@ -5,7 +5,11 @@
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include "SpaghettiEngine/Camera.h"
 using namespace std;
+
+static bool paused = true;
+static Camera camera;
 
 static void init_opengl() {
 	glewInit();
@@ -40,10 +44,25 @@ static void drawFloorGrid(int size, double step) {
 static void display_func() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
+
 	drawFloorGrid(16, 0.25);
 	glColor3ub(255, 255, 255);
 	glutSwapBuffers();
 }
+
+
+static void reshape_func(int width, int height) {
+	glViewport(0, 0, width, height);
+	camera.aspect = static_cast<double>(width) / height;
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(&camera.projection()[0][0]);
+}
+
+
+static void mouseWheel_func(int wheel, int direction, int x, int y) {
+	camera.transform().translate(vec3(0, 0, direction * 0.1));
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -53,6 +72,14 @@ int main(int argc, char* argv[])
 	glutCreateWindow("NYUNITY");
 	// Init OpenGL
 	init_opengl();
+
+	// Init camera
+	camera.transform().pos() = vec3(0, 1, 4);
+	camera.transform().rotate(glm::radians(180.0), vec3(0, 1, 0));
+	
+	
+	
+	glutMouseWheelFunc(mouseWheel_func);
 
 	glutDisplayFunc(display_func);
 	
