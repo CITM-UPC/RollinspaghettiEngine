@@ -24,9 +24,6 @@
     <ClInclude Include="Transform.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="types.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Component.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -34,6 +31,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="TransformComponent.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
