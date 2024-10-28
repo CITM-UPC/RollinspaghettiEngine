@@ -16,6 +16,12 @@
     <Filter Include="Core">
       <UniqueIdentifier>{8534507a-f492-431a-9acd-4bb965b835c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor">
+      <UniqueIdentifier>{504b0d99-9a9d-421d-b567-2f2fc10f07ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Windows">
+      <UniqueIdentifier>{1fe180ae-fc09-4920-9793-4578df70d587}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -36,6 +42,18 @@
     <ClInclude Include="types.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="EditorLayer.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleWindow.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="HierarchyWindow.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="InspectorWindow.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp">
@@ -52,6 +70,18 @@
     </ClCompile>
     <ClCompile Include="TransformComponent.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorLayer.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleWindow.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="HierarchyWindow.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="InspectorWindow.cpp">
+      <Filter>Editor\Windows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,4 +1,17 @@
 {
 	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-	"dependencies": [ "imgui", "opengl", "sdl2", "assimp", "glm", "glew", "freeglut" ]
+	"dependencies": [
+
+		"assimp",
+		"opengl",
+		"glew",
+		"sdl2",
+		"freeglut",
+		{
+			"name": "imgui",
+			"features": [ "sdl2-binding", "opengl3-binding" ]
+		},
+		"glm",
+		"sdl2-image"
+	]
 }
