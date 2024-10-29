@@ -78,6 +78,7 @@ void ConsoleWindow::render() {
             _showEditorWindows = !_showEditorWindows; // Toggle visibility
         }
 
+		  // Put the next menu on the same line
         // Quit Button
         if (ImGui::Button("Quit")) {
             _shouldQuit = true; // Set the quit flag
@@ -97,12 +98,12 @@ void ConsoleWindow::render() {
         if (ImGui::Button("GitHub Link")) {
             SDL_OpenURL("https://github.com/CITM-UPC/RollinspaghettiEngine");  // Replace with your actual URL
         }
-
+        ImGui::SameLine();
         // About Us button
         if (ImGui::Button("About Us")) {
             ImGui::OpenPopup("AboutUsPopup");  // Open the About Us popup
         }
-
+        ImGui::SameLine();
         // Config Window button
         if (ImGui::Button("Config Window")) {
             ImGui::OpenPopup("ConfigWindow");  // Open the Config Window popup
