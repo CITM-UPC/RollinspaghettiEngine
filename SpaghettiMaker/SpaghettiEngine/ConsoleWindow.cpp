@@ -65,8 +65,18 @@ void ConsoleWindow::render() {
 
 
     if (ImGui::BeginMainMenuBar()) {
-        if (ImGui::BeginMenu("GameObject")) {
+        if (ImGui::BeginMenu("GameObjects")) {
             PrimitiveMenu::ShowPrimitiveMenu(_activeScene);
+            if (ImGui::Button("Create cube"))
+            {
+                GameObject* cube = PrimitiveGenerator::CreateCube();
+            }
+            if (ImGui::Button("Create sphere"))
+            {
+                GameObject* cube = PrimitiveGenerator::CreateSphere();
+            }
+
+
             ImGui::EndMenu();
         }
         // ... rest of your menu items ...
@@ -78,15 +88,6 @@ void ConsoleWindow::render() {
         GameObject* cube = PrimitiveGenerator::CreateCube();
     }
 
-    //if (ImGui::BeginMainMenuBar()) {
-    //    if (ImGui::BeginMenu("GameObject")) {
-    //        PrimitiveMenu::ShowPrimitiveMenu(activeScene);
-    //        ImGui::EndMenu();
-    //    }
-    //    
-    //    // ... rest of your menu items ...
-    //    ImGui::EndMainMenuBar();
-    //}
     ImGui::SameLine();
     // About Us button
     if (ImGui::Button("About Us")) {

@@ -229,12 +229,16 @@ static void reshape_func(int width, int height) {
     glLoadMatrixd(&camera.projection()[0][0]);
 }
 
+Scene* _activeScene = new Scene("Main Scene");
+
+void Update() {
+    _activeScene->Update();
+}
 
 int main(int argc, char** argv) {
     MyWindow window("ImGUI with SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
     //MyGUI gui(window.windowPtr(), window.contextPtr());
     ConsoleWindow console(window.windowPtr(), window.contextPtr());
-
 
     init_openGL();
     //DevIL initialization
