@@ -259,18 +259,38 @@ void cameramovement() {
     
    
     const Uint8* keystates = SDL_GetKeyboardState(nullptr);
-    if (keystates[SDL_SCANCODE_W]) {
-        camera.transform().translate(vec3(0, 0, -1));
+    
+
+	if (keystates[SDL_SCANCODE_LSHIFT]) {
+        if (keystates[SDL_SCANCODE_W]) {
+            camera.transform().translate(vec3(0, 0, 2));
+        }
+        if (keystates[SDL_SCANCODE_S]) {
+            camera.transform().translate(vec3(0, 0, -2));
+        }
+        if (keystates[SDL_SCANCODE_A]) {
+            camera.transform().translate(vec3(2, 0, 0));
+        }
+        if (keystates[SDL_SCANCODE_D]) {
+            camera.transform().translate(vec3(-2, 0, 0));
+        }
     }
-    if (keystates[SDL_SCANCODE_S]) {
-        camera.transform().translate(vec3(0, 0, 1));
+    else {
+          if (keystates[SDL_SCANCODE_W]) {
+             camera.transform().translate(vec3(0, 0, 1));
+          }
+          if (keystates[SDL_SCANCODE_S]) {
+             camera.transform().translate(vec3(0, 0, -1));
+          }
+          if (keystates[SDL_SCANCODE_A]) {
+                camera.transform().translate(vec3(1, 0, 0));
+          }
+          if (keystates[SDL_SCANCODE_D]) {
+              camera.transform().translate(vec3(-1, 0, 0));
+          }
     }
-    if (keystates[SDL_SCANCODE_A]) {
-        camera.transform().translate(vec3(-1, 0, 0));
-    }
-    if (keystates[SDL_SCANCODE_D]) {
-        camera.transform().translate(vec3(1, 0, 0));
-    }
+
+
 }
 
 int main(int argc, char** argv) {
@@ -305,7 +325,7 @@ int main(int argc, char** argv) {
     camera.transform().pos() = vec3(0, 1, 5);
     camera.transform().rotate(glm::radians(180.0), vec3(0, 1, 0));
 
-    
+	// Set up callbacks
 	cameramovement();
 	
    
@@ -338,6 +358,8 @@ int main(int argc, char** argv) {
         if (scene) {
             scene->Update();
             scene->Render();
+            cameramovement();
+
         }
 
         // Draw floor grid
