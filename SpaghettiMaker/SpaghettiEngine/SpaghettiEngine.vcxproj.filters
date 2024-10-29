@@ -81,6 +81,9 @@
     <ClInclude Include="TextureManager.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -130,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="TextureManager.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
