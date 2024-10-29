@@ -59,5 +59,5 @@ public:
     vec3 GetLocalEulerAngles() const;
 
     // Optional: Editor GUI
-    void OnInspectorGUI() override;
+    //void OnInspectorGUI() override;
 };

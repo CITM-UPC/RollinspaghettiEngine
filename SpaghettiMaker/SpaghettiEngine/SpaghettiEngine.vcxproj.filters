@@ -90,6 +90,9 @@
     <ClInclude Include="PrimitiveGenerator.h">
       <Filter>Primitives</Filter>
     </ClInclude>
+    <ClInclude Include="PrimitiveMenu.h">
+      <Filter>Primitives</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">

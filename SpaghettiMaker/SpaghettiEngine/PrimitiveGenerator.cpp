@@ -1,6 +1,7 @@
 #include "PrimitiveGenerator.h"
 #include "MaterialComponent.h"
 #include "TransformComponent.h"
+#include "GameObject.h"
 #include <glm/gtc/constants.hpp>
 
 GameObject* PrimitiveGenerator::CreateCube(const char* name, float size) {

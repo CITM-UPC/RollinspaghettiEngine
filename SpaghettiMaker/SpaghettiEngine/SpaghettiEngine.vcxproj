@@ -31,6 +31,7 @@
     <ClInclude Include="MyGui.h" />
     <ClInclude Include="Mywindow.h" />
     <ClInclude Include="PrimitiveGenerator.h" />
+    <ClInclude Include="PrimitiveMenu.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Texture.h" />

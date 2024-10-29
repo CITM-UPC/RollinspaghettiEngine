@@ -23,9 +23,9 @@ public:
     }
 
     // Component interface
-    void OnStart() override;
-    void OnUpdate() override;
-    void OnInspectorGUI() override;
+    //void OnStart() override;
+    //void OnUpdate() override;
+    //void OnInspectorGUI() override;
 
     // Material property setters
     void SetAmbient(const vec3& color) { _ambient = color; }

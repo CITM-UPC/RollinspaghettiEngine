@@ -7,6 +7,9 @@
 #include <imgui_impl_opengl3.h>
 #include <vector>
 #include <chrono>
+#include "PrimitiveGenerator.h"
+#include "Scene.h"
+#include "PrimitiveMenu.h"
 #ifdef _WIN32
 #include <windows.h>  // Include Windows API header for memory info
 #include <psapi.h> 
@@ -59,6 +62,21 @@ void ConsoleWindow::render() {
     if (ImGui::Button("GitHub Link")) {
         SDL_OpenURL("https://github.com/CITM-UPC/RollinspaghettiEngine");  // Replace with your actual URL
     }
+
+    if (ImGui::Button("Create cube"))
+    {
+        GameObject* cube = PrimitiveGenerator::CreateCube();
+    }
+
+    //if (ImGui::BeginMainMenuBar()) {
+    //    if (ImGui::BeginMenu("GameObject")) {
+    //        PrimitiveMenu::ShowPrimitiveMenu(activeScene);
+    //        ImGui::EndMenu();
+    //    }
+    //    
+    //    // ... rest of your menu items ...
+    //    ImGui::EndMainMenuBar();
+    //}
     ImGui::SameLine();
     // About Us button
     if (ImGui::Button("About Us")) {
