@@ -14,7 +14,7 @@ public:
 	ConsoleWindow& operator=(const ConsoleWindow&) = delete;
 	~ConsoleWindow();
 	void render();
-
+	bool _shouldQuit = false;
 	void processEvent(const SDL_Event& event) override;
 	// Declaración del método getMemoryUsage
 	size_t getMemoryUsage();
@@ -24,6 +24,8 @@ public:
 	Scene* GetActiveScene() const { return _activeScene; }
 private:
 	Scene* _activeScene = nullptr;  // Add this member
+	bool _showEditorWindows = true;
+	
 	float sliderValue = 0.5f;  // Initial value for the slider
 	bool checkboxValue = false;  // Initial value for the checkbox
 	bool buttonPressed = false;  // Track if button was pressed
