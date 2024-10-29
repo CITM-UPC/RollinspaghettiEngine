@@ -10,6 +10,7 @@
 #include "SpaghettiEngine/ConsoleWindow.h"
 #include "SpaghettiEngine/Transform.h"
 #include "SpaghettiEngine/Camera.h"
+#include "SpaghettiEngine/TextureManager.h"
 
 using namespace std;
 
@@ -130,6 +131,10 @@ int main(int argc, char** argv) {
     //DevIL initialization
     ilInit();
     iluInit();
+
+    // Initialize the texture manager
+    TEXTURE_MANAGER->Initialize();
+
 
     //Cube
     cube.color = glm::u8vec3(0, 0, 255);
