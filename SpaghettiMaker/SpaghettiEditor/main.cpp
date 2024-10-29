@@ -82,102 +82,102 @@ struct Cube {
 };
 
 
-struct Casa {
-    Transform transform;
-    glm::u8vec3 color;
-
-    vector<vector<vec3>> vertex_data;
-    vector<vector<unsigned int>> index_data;
-
-    vector<unsigned int> vBPosID, iBID;
-
-    unsigned int auxvBID;
-    unsigned int auxiBID;
-    unsigned int numM = 0;
-
-    // Función para cargar geometría desde un archivo FBX
-    void Geometry(const std::string& filepath) {
-        // Crear un importador Assimp
-        Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(filepath,
-            aiProcess_CalcTangentSpace |
-            aiProcess_Triangulate |
-            aiProcess_JoinIdenticalVertices |
-            aiProcess_SortByPType);
-        
-        if (scene == nullptr) {
-            std::cerr << "Error al cargar el archivo: " << importer.GetErrorString() << std::endl;
-            
-        }
-        else {
-            numM = scene->mNumMeshes;
-			vertex_data.resize(numM);
-			index_data.resize(numM);
-            // Procesar las mallas
-            for (unsigned int m = 0; m < numM; m++) {
-                aiMesh* mesh = scene->mMeshes[m];
-                std::cout << "Malla " << m << ": " << mesh->mName.C_Str() << std::endl;
-                // Procesar los vértices
-                for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-
-                    aiVector3D vertex = mesh->mVertices[i];
-                    vec3 aux = vec3(vertex.x, vertex.y, vertex.z);
-                    vertex_data[m].push_back(aux);
-
-                }
-                // Procesar las caras (índices)
-                for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-                    aiFace face = mesh->mFaces[i];
-                    for (unsigned int j = 0; j < face.mNumIndices; j++) {
-                        index_data[m].push_back(face.mIndices[j]);
-                    }
-                }
-
-                
-                glGenBuffers(1, &auxvBID);
-                glBindBuffer(GL_ARRAY_BUFFER, auxvBID);
-                glBufferData(GL_ARRAY_BUFFER, vertex_data[m].size() * sizeof(vec3), vertex_data[m].data(), GL_STATIC_DRAW);
-
-                glGenBuffers(1, &auxiBID);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, auxiBID);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data[m].size() * sizeof(unsigned int), index_data[m].data(), GL_STATIC_DRAW);
-               
-                vBPosID.push_back(auxvBID);
-                iBID.push_back(auxiBID);			    //buffer d'indexs
-              					
-
-            }
-        }
-
-        
-    }
-
-    void Init() {
-        glGenBuffers(1, &auxvBID);
-        glBindBuffer(GL_ARRAY_BUFFER, auxvBID);
-        glBufferData(GL_ARRAY_BUFFER, vertex_data.size() * sizeof(vec3), vertex_data.data(), GL_STATIC_DRAW);
-
-        glGenBuffers(1, &auxiBID);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, auxiBID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data.size() * sizeof(unsigned int), index_data.data(), GL_STATIC_DRAW);
-    }
-
-    void draw() const {
-        for (int i = 0; i < numM; i++) {
-
-            glPushMatrix();
-            glMultMatrixd(&transform.mat()[0][0]);
-            glColor3ub(color.r, color.g, color.b);
-            glEnableClientState(GL_VERTEX_ARRAY);
-            glBindBuffer(GL_ARRAY_BUFFER, vBPosID[i]);
-            glVertexPointer(3, GL_FLOAT, 0, 0); // Asegúrate de usar GL_FLOAT aquí si vec3 usa float
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBID[i]);
-            glDrawElements(GL_TRIANGLES, index_data.size(), GL_UNSIGNED_INT, 0);
-            glDisableClientState(GL_VERTEX_ARRAY);
-            glPopMatrix();
-        }
-    }
-};
+//struct Casa {
+//    Transform transform;
+//    glm::u8vec3 color;
+//
+//    vector<vector<vec3>> vertex_data;
+//    vector<vector<unsigned int>> index_data;
+//
+//    vector<unsigned int> vBPosID, iBID;
+//
+//    unsigned int auxvBID;
+//    unsigned int auxiBID;
+//    unsigned int numM = 0;
+//
+//    // Función para cargar geometría desde un archivo FBX
+//    void Geometry(const std::string& filepath) {
+//        // Crear un importador Assimp
+//        Assimp::Importer importer;
+//        const aiScene* scene = importer.ReadFile(filepath,
+//            aiProcess_CalcTangentSpace |
+//            aiProcess_Triangulate |
+//            aiProcess_JoinIdenticalVertices |
+//            aiProcess_SortByPType);
+//        
+//        if (scene == nullptr) {
+//            std::cerr << "Error al cargar el archivo: " << importer.GetErrorString() << std::endl;
+//            
+//        }
+//        else {
+//            numM = scene->mNumMeshes;
+//			vertex_data.resize(numM);
+//			index_data.resize(numM);
+//            // Procesar las mallas
+//            for (unsigned int m = 0; m < numM; m++) {
+//                aiMesh* mesh = scene->mMeshes[m];
+//                std::cout << "Malla " << m << ": " << mesh->mName.C_Str() << std::endl;
+//                // Procesar los vértices
+//                for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+//
+//                    aiVector3D vertex = mesh->mVertices[i];
+//                    vec3 aux = vec3(vertex.x, vertex.y, vertex.z);
+//                    vertex_data[m].push_back(aux);
+//
+//                }
+//                // Procesar las caras (índices)
+//                for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+//                    aiFace face = mesh->mFaces[i];
+//                    for (unsigned int j = 0; j < face.mNumIndices; j++) {
+//                        index_data[m].push_back(face.mIndices[j]);
+//                    }
+//                }
+//
+//                
+//                glGenBuffers(1, &auxvBID);
+//                glBindBuffer(GL_ARRAY_BUFFER, auxvBID);
+//                glBufferData(GL_ARRAY_BUFFER, vertex_data[m].size() * sizeof(vec3), vertex_data[m].data(), GL_STATIC_DRAW);
+//
+//                glGenBuffers(1, &auxiBID);
+//                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, auxiBID);
+//                glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data[m].size() * sizeof(unsigned int), index_data[m].data(), GL_STATIC_DRAW);
+//               
+//                vBPosID.push_back(auxvBID);
+//                iBID.push_back(auxiBID);			    //buffer d'indexs
+//              					
+//
+//            }
+//        }
+//
+//        
+//    }
+//
+//    void Init() {
+//        glGenBuffers(1, &auxvBID);
+//        glBindBuffer(GL_ARRAY_BUFFER, auxvBID);
+//        glBufferData(GL_ARRAY_BUFFER, vertex_data.size() * sizeof(vec3), vertex_data.data(), GL_STATIC_DRAW);
+//
+//        glGenBuffers(1, &auxiBID);
+//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, auxiBID);
+//        glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data.size() * sizeof(unsigned int), index_data.data(), GL_STATIC_DRAW);
+//    }
+//
+//    void draw() const {
+//        for (int i = 0; i < numM; i++) {
+//
+//            glPushMatrix();
+//            glMultMatrixd(&transform.mat()[0][0]);
+//            glColor3ub(color.r, color.g, color.b);
+//            glEnableClientState(GL_VERTEX_ARRAY);
+//            glBindBuffer(GL_ARRAY_BUFFER, vBPosID[i]);
+//            glVertexPointer(3, GL_FLOAT, 0, 0); // Asegúrate de usar GL_FLOAT aquí si vec3 usa float
+//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBID[i]);
+//            glDrawElements(GL_TRIANGLES, index_data.size(), GL_UNSIGNED_INT, 0);
+//            glDisableClientState(GL_VERTEX_ARRAY);
+//            glPopMatrix();
+//        }
+//    }
+//};
 
 static void init_openGL() {
     glewInit();
@@ -206,7 +206,7 @@ static void drawFloorGrid(int size, double step) {
 
 
 static Cube cube;
-static Casa casa;
+//static Casa casa;
 
 static void display_func() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -215,8 +215,8 @@ static void display_func() {
     drawFloorGrid(26, 1.0);
     cube.transform.rotate(0.001, vec3(1, 1, 0));
    // cube.draw();
-    casa.transform.rotate(0.001, vec3(1, 1, 0));
-    casa.draw();
+    //casa.transform.rotate(0.001, vec3(1, 1, 0));
+    //casa.draw();
 }
 
 static void reshape_func(int width, int height) {
@@ -251,10 +251,16 @@ int main(int argc, char** argv) {
     camera.transform().pos() = vec3(0, 1, 4);
     camera.transform().rotate(glm::radians(180.0), vec3(0, 1, 0));
 
+	//Camera movement
+
+
+
+
+
 	//Casa
-    casa.Geometry("../SpaghettiEngine/BakerHouse.fbx");
+    //casa.Geometry("../SpaghettiEngine/BakerHouse.fbx");
    // casa.Init();
-	casa.transform.translate(vec3(0, 1, -1));
+	//casa.transform.translate(vec3(0, 1, -1));
     
 
     while (window.processEvents(&console) && window.isOpen()) {
