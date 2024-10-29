@@ -3,6 +3,7 @@
 #include "MyWindow.h"
 #include <vector>
 #include <chrono>
+#include "Scene.h"
 
 class ConsoleWindow : public IEventProcessor
 {
@@ -18,8 +19,11 @@ public:
 	// Declaración del método getMemoryUsage
 	size_t getMemoryUsage();
 
-
+	// Add Scene management
+	void SetActiveScene(Scene* scene) { _activeScene = scene; }
+	Scene* GetActiveScene() const { return _activeScene; }
 private:
+	Scene* _activeScene = nullptr;  // Add this member
 	float sliderValue = 0.5f;  // Initial value for the slider
 	bool checkboxValue = false;  // Initial value for the checkbox
 	bool buttonPressed = false;  // Track if button was pressed

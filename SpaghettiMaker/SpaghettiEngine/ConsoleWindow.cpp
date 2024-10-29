@@ -63,6 +63,16 @@ void ConsoleWindow::render() {
         SDL_OpenURL("https://github.com/CITM-UPC/RollinspaghettiEngine");  // Replace with your actual URL
     }
 
+
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenu("GameObject")) {
+            PrimitiveMenu::ShowPrimitiveMenu(_activeScene);
+            ImGui::EndMenu();
+        }
+        // ... rest of your menu items ...
+        ImGui::EndMainMenuBar();
+    }
+
     if (ImGui::Button("Create cube"))
     {
         GameObject* cube = PrimitiveGenerator::CreateCube();
