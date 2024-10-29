@@ -15,6 +15,9 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <iostream> 
+#include "spaghettiEngine/PrimitiveGenerator.h"
+#include "spaghettiEngine/GameObject.h"
+#include "spaghettiEngine/Scene.h"
 
 
 using namespace std;
@@ -253,8 +256,6 @@ int main(int argc, char** argv) {
 
 	//Camera movement
 
-
-    
 
 	//Casa
     //casa.Geometry("../SpaghettiEngine/BakerHouse.fbx");

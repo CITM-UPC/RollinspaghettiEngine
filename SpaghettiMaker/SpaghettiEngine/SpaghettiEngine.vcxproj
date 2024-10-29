@@ -30,6 +30,7 @@
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="MyGui.h" />
     <ClInclude Include="Mywindow.h" />
+    <ClInclude Include="PrimitiveGenerator.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Texture.h" />
@@ -50,6 +51,7 @@
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="MyGui.cpp" />
     <ClCompile Include="MyWindow.cpp" />
+    <ClCompile Include="PrimitiveGenerator.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Texture.cpp" />
