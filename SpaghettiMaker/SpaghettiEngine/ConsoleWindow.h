@@ -15,6 +15,9 @@ public:
 	void render();
 
 	void processEvent(const SDL_Event& event) override;
+	// Declaración del método getMemoryUsage
+	size_t getMemoryUsage();
+
 
 private:
 	float sliderValue = 0.5f;  // Initial value for the slider

@@ -254,8 +254,7 @@ int main(int argc, char** argv) {
 	//Camera movement
 
 
-
-
+    
 
 	//Casa
     //casa.Geometry("../SpaghettiEngine/BakerHouse.fbx");

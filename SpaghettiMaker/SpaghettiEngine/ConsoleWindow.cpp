@@ -7,6 +7,10 @@
 #include <imgui_impl_opengl3.h>
 #include <vector>
 #include <chrono>
+#ifdef _WIN32
+#include <windows.h>  // Include Windows API header for memory info
+#include <psapi.h> 
+#endif
 
 ConsoleWindow::ConsoleWindow(SDL_Window* window, void* context) {
     IMGUI_CHECKVERSION();
@@ -17,7 +21,7 @@ ConsoleWindow::ConsoleWindow(SDL_Window* window, void* context) {
     ImGui::StyleColorsDark();
     ImGui_ImplSDL2_InitForOpenGL(window, context);
     ImGui_ImplOpenGL3_Init();
-    
+
     // Initialize FPS tracking variables
     lastFrameTime = std::chrono::high_resolution_clock::now();
 }
@@ -28,6 +32,17 @@ ConsoleWindow::~ConsoleWindow() {
     ImGui::DestroyContext();
 }
 
+// Function to get memory usage (Windows-specific)
+size_t ConsoleWindow::getMemoryUsage() {
+#ifdef _WIN32
+    PROCESS_MEMORY_COUNTERS pmc;
+    if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
+        return pmc.WorkingSetSize; // Return the working set size (in bytes)
+    }
+#endif
+    return 0; // Return 0 if we can't get the memory usage
+}
+
 void ConsoleWindow::render() {
     // Start new frames for OpenGL and SDL
     ImGui_ImplOpenGL3_NewFrame();
@@ -35,21 +50,25 @@ void ConsoleWindow::render() {
     ImGui::NewFrame();
 
     // Begin a new ImGui window
-    ImGui::Begin("My Custom Window");  // Open a new ImGui window with a custom title
+    ImGui::Begin("Editor");  // Open a new ImGui window with a custom title
 
     // Add custom content to the window
-    ImGui::Text("Hello, welcome to My Custom Window!");  // Display some text
-    ImGui::SliderFloat("Slider", &sliderValue, 0.0f, 1.0f);  // Example slider
-    ImGui::Checkbox("Check Me!", &checkboxValue);  // Example checkbox
+    ImGui::Text("Main Menu");  // Display some text
 
     // GitHub Link button
     if (ImGui::Button("GitHub Link")) {
         SDL_OpenURL("https://github.com/CITM-UPC/RollinspaghettiEngine");  // Replace with your actual URL
     }
-
+    ImGui::SameLine();
     // About Us button
     if (ImGui::Button("About Us")) {
         ImGui::OpenPopup("AboutUsPopup");  // Open the About Us popup
+    }
+
+    ImGui::SameLine();
+    // Config Window button
+    if (ImGui::Button("Config Window")) {
+        ImGui::OpenPopup("ConfigWindow");  // Open the Config Window popup
     }
 
     // About Us popup
@@ -65,13 +84,26 @@ void ConsoleWindow::render() {
         ImGui::EndPopup();
     }
 
-    // System Info button
-    if (ImGui::Button("System Info")) {
-        ImGui::OpenPopup("SystemInfoPopup");  // Open the System Info popup
-    }
+    // Config Window popup (contains FPS graph and system info)
+    if (ImGui::BeginPopupModal("ConfigWindow", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        // Display the FPS graph in the popup
+       
+        // FPS calculation
+         auto now = std::chrono::high_resolution_clock::now();
+         float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(now - lastFrameTime).count();
+         lastFrameTime = now;
 
-    // System Info popup
-    if (ImGui::BeginPopupModal("SystemInfoPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+          // Calculate FPS and store in buffer
+          float fps = 1.0f / deltaTime;
+          if (fpsHistory.size() >= maxFPSHistorySize) {
+             fpsHistory.erase(fpsHistory.begin());
+          }
+          fpsHistory.push_back(fps);
+
+    // Display current FPS
+         ImGui::Text("FPS: %.1f", fps);  // Display current FPS
+        ImGui::PlotLines("FPS History", fpsHistory.data(), fpsHistory.size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 100));
+
         // Display hardware and software information
         ImGui::Text("Hardware and Software Information:");
 
@@ -92,29 +124,18 @@ void ConsoleWindow::render() {
         const GLubyte* glVersion = glGetString(GL_VERSION);
         ImGui::Text("OpenGL Version: %s", glVersion);
 
-        // Close button for System Info popup
+        // Memory consumption information
+        size_t memoryUsage = getMemoryUsage(); // Get memory usage
+        ImGui::Text("Memory Usage: %zu bytes (%.2f MB)", memoryUsage, memoryUsage / (1024.0f * 1024.0f));
+
+        // Close button for Config Window popup
         if (ImGui::Button("Close")) {
             ImGui::CloseCurrentPopup();
         }
-
         ImGui::EndPopup();
     }
 
-    // FPS calculation and graph
-    auto now = std::chrono::high_resolution_clock::now();
-    float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(now - lastFrameTime).count();
-    lastFrameTime = now;
-
-    // Calculate FPS and store in buffer
-    float fps = 1.0f / deltaTime;
-    if (fpsHistory.size() >= maxFPSHistorySize) {
-        fpsHistory.erase(fpsHistory.begin());
-    }
-    fpsHistory.push_back(fps);
-
-    // Display FPS as a graph
-    ImGui::Text("FPS: %.1f", fps);  // Display current FPS
-    ImGui::PlotLines("FPS History", fpsHistory.data(), fpsHistory.size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 100));
+   
 
     ImGui::End();  // End the ImGui window
 
