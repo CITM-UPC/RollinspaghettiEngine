@@ -240,6 +240,10 @@ int main(int argc, char** argv) {
     //MyGUI gui(window.windowPtr(), window.contextPtr());
     ConsoleWindow console(window.windowPtr(), window.contextPtr());
 
+    // Create and initialize scene
+    Scene* scene = new Scene("Main Scene");
+    console.SetActiveScene(scene);  // Set the active scene
+
     init_openGL();
     //DevIL initialization
     ilInit();
@@ -247,7 +251,7 @@ int main(int argc, char** argv) {
 
     // Initialize the texture manager
     TEXTURE_MANAGER->Initialize();
-
+	PrimitiveGenerator::CreateCube();
 
     //Cube
     cube.color = glm::u8vec3(0, 0, 255);
@@ -255,7 +259,7 @@ int main(int argc, char** argv) {
     cube.transform.translate(vec3(0, 1, 1));
 
     // Init camera
-    camera.transform().pos() = vec3(0, 1, 4);
+    camera.transform().pos() = vec3(0, 1, 5);
     camera.transform().rotate(glm::radians(180.0), vec3(0, 1, 0));
 
 	//Camera movement
@@ -276,9 +280,12 @@ int main(int argc, char** argv) {
         const auto t1 = hrclock::now();
         const auto dt = t1 - t0;
         if (dt < FRAME_DT) this_thread::sleep_for(FRAME_DT - dt);
+
+        if (scene) scene->Update();
+
     }
 
 
-
+    delete scene;
     return 0;
 }
