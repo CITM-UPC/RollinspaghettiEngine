@@ -255,7 +255,7 @@ void Update() {
     _activeScene->Update();
     _activeScene->Render();
 }
-void cameramovement() {
+void cameramovement(const SDL_Event& event) {
     
    
     const Uint8* keystates = SDL_GetKeyboardState(nullptr);
@@ -307,6 +307,19 @@ void cameramovement() {
 	
     //Camera Zoom 
 
+    if (event.type == SDL_MOUSEWHEEL) {
+        if (event.wheel.y > 0) {
+            camera.fov -= glm::radians(2.0f); // Acerca la cámara (zoom in)
+        }
+        else if (event.wheel.y < 0) {
+            camera.fov += glm::radians(2.0f); // Aleja la cámara (zoom out)
+        }
+
+        // Limitar el rango de zoom
+        if (camera.fov < glm::radians(30.0f)) camera.fov = glm::radians(30.0f);
+        if (camera.fov > glm::radians(60.0f)) camera.fov = glm::radians(60.0f);
+
+    }
 
 
 }
@@ -342,11 +355,7 @@ int main(int argc, char** argv) {
     // Init camera
     camera.transform().pos() = vec3(0, 1, 5);
     camera.transform().rotate(glm::radians(180.0), vec3(0, 1, 0));
-
-	// Set up callbacks
-	cameramovement();
-	
-   
+ 
 
 	//Camera movement
 
@@ -376,8 +385,6 @@ int main(int argc, char** argv) {
         if (scene) {
             scene->Update();
             scene->Render();
-            cameramovement();
-
         }
 
         // Draw floor grid
@@ -390,6 +397,13 @@ int main(int argc, char** argv) {
         const auto t1 = hrclock::now();
         const auto dt = t1 - t0;
         if (dt < FRAME_DT) this_thread::sleep_for(FRAME_DT - dt);
+
+        //Camera Zoom
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            cameramovement(event); // Llama a cameramovement pasando el evento
+            if (event.type == SDL_QUIT) window.close(); // Otras condiciones para cerrar la ventana
+        }
     }
 
 
