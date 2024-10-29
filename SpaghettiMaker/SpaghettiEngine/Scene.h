@@ -29,6 +29,10 @@ public:
     void Pause(bool pause);
 
     void Render() {
+        // Save OpenGL state
+        GLboolean lighting = glIsEnabled(GL_LIGHTING);
+        GLboolean texture2D = glIsEnabled(GL_TEXTURE_2D);
+
         // Set up OpenGL state
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_LIGHTING);
@@ -36,7 +40,12 @@ public:
 
         // Setup basic lighting
         GLfloat lightPos[] = { 0.0f, 10.0f, 0.0f, 1.0f };
+        GLfloat lightAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+        GLfloat lightDiffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+
         glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+        glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
 
         // Render all GameObjects
         for (const auto& gameObject : _gameObjects) {
@@ -44,6 +53,10 @@ public:
                 renderer->OnUpdate();
             }
         }
+
+        // Restore OpenGL state
+        if (!lighting) glDisable(GL_LIGHTING);
+        if (!texture2D) glDisable(GL_TEXTURE_2D);
     }
 
     // GameObject management

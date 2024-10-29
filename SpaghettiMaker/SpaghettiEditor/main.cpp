@@ -1,4 +1,4 @@
-#include <GL/glew.h>
+ï»¿#include <GL/glew.h>
 #include <chrono>
 #include <thread>
 #include <exception>
@@ -86,7 +86,6 @@ struct Cube {
     }
 };
 
-
 //struct Casa {
 //    Transform transform;
 //    glm::u8vec3 color;
@@ -100,7 +99,7 @@ struct Cube {
 //    unsigned int auxiBID;
 //    unsigned int numM = 0;
 //
-//    // Función para cargar geometría desde un archivo FBX
+//    // Funciï¿½n para cargar geometrï¿½a desde un archivo FBX
 //    void Geometry(const std::string& filepath) {
 //        // Crear un importador Assimp
 //        Assimp::Importer importer;
@@ -122,7 +121,7 @@ struct Cube {
 //            for (unsigned int m = 0; m < numM; m++) {
 //                aiMesh* mesh = scene->mMeshes[m];
 //                std::cout << "Malla " << m << ": " << mesh->mName.C_Str() << std::endl;
-//                // Procesar los vértices
+//                // Procesar los vï¿½rtices
 //                for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
 //
 //                    aiVector3D vertex = mesh->mVertices[i];
@@ -130,7 +129,7 @@ struct Cube {
 //                    vertex_data[m].push_back(aux);
 //
 //                }
-//                // Procesar las caras (índices)
+//                // Procesar las caras (ï¿½ndices)
 //                for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
 //                    aiFace face = mesh->mFaces[i];
 //                    for (unsigned int j = 0; j < face.mNumIndices; j++) {
@@ -175,7 +174,7 @@ struct Cube {
 //            glColor3ub(color.r, color.g, color.b);
 //            glEnableClientState(GL_VERTEX_ARRAY);
 //            glBindBuffer(GL_ARRAY_BUFFER, vBPosID[i]);
-//            glVertexPointer(3, GL_FLOAT, 0, 0); // Asegúrate de usar GL_FLOAT aquí si vec3 usa float
+//            glVertexPointer(3, GL_FLOAT, 0, 0); // Asegï¿½rate de usar GL_FLOAT aquï¿½ si vec3 usa float
 //            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBID[i]);
 //            glDrawElements(GL_TRIANGLES, index_data.size(), GL_UNSIGNED_INT, 0);
 //            glDisableClientState(GL_VERTEX_ARRAY);
@@ -184,16 +183,36 @@ struct Cube {
 //    }
 //};
 
+
 static void init_openGL() {
     glewInit();
     if (!GLEW_VERSION_3_0) throw exception("OpenGL 3.0 API is not available.");
+
+    // Set up OpenGL state
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.5, 0.5, 0.5, 1.0);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_TEXTURE_2D);
+
+    // Set default render states
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClearDepth(1.0f);
+
+    // Set up default material
+    GLfloat defaultAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat defaultDiffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+    GLfloat defaultSpecular[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    GLfloat defaultShininess = 0.0f;
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, defaultAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, defaultDiffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, defaultSpecular);
+    glMaterialf(GL_FRONT, GL_SHININESS, defaultShininess);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glScaled(1.0, (double)WINDOW_SIZE.x / WINDOW_SIZE.y, 1.0);
-
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -219,7 +238,7 @@ static void display_func() {
     glLoadMatrixd(&camera.view()[0][0]);
     drawFloorGrid(26, 1.0);
     cube.transform.rotate(0.001, vec3(1, 1, 0));
-    cube.draw();
+    /*cube.draw();*/
     //casa.transform.rotate(0.001, vec3(1, 1, 0));
     //casa.draw();
 }
@@ -231,12 +250,11 @@ static void reshape_func(int width, int height) {
     glLoadMatrixd(&camera.projection()[0][0]);
 }
 
-Scene* _activeScene = new Scene("Main Scene");
-
+static Scene* _activeScene = nullptr;
 void Update() {
     _activeScene->Update();
+    _activeScene->Render();
 }
-
 void cameramovement() {
     
    
@@ -272,12 +290,16 @@ int main(int argc, char** argv) {
 
     // Initialize the texture manager
     TEXTURE_MANAGER->Initialize();
-	PrimitiveGenerator::CreateCube();
+
+    // Create a cube and add it to the scene
+    GameObject* cube = PrimitiveGenerator::CreateCube("TestCube", 10.0f);
+    scene->CreateGameObject("TestCube", cube);
+
 
     //Cube
-    cube.color = glm::u8vec3(0, 0, 255);
-    cube.Init();
-    cube.transform.translate(vec3(0, 1, 1));
+    //cube.color = glm::u8vec3(0, 0, 255);
+    //cube.Init();
+    //cube.transform.translate(vec3(0, 1, 1));
 
     // Init camera
     camera.transform().pos() = vec3(0, 1, 5);
@@ -298,42 +320,36 @@ int main(int argc, char** argv) {
     
 
     while (window.processEvents(&console) && window.isOpen()) {
-        // Check if we should quit
-        if (console._shouldQuit == true) {
-            break; // Exit the loop if the quit flag is set
-        }
+        if (console._shouldQuit) break;
 
         const auto t0 = hrclock::now();
+
         // Clear buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Set up view/projection matrices
+        // Set up camera matrices
         glMatrixMode(GL_PROJECTION);
         glLoadMatrixd(glm::value_ptr(camera.projection()));
 
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixd(glm::value_ptr(camera.view()));
 
-        // Render scene
+        // Update and render scene
         if (scene) {
             scene->Update();
-            scene->Render();  // Add this line
+            scene->Render();
         }
 
-        display_func();
-        reshape_func(WINDOW_SIZE.x, WINDOW_SIZE.y);
+        // Draw floor grid
+        drawFloorGrid(26, 1.0);
+
+        // Render UI
         console.render();
         window.swapBuffers();
 
         const auto t1 = hrclock::now();
         const auto dt = t1 - t0;
         if (dt < FRAME_DT) this_thread::sleep_for(FRAME_DT - dt);
-
-        if (scene) scene->Update();
-
-        if (scene) {
-            scene->Update();
-        }
     }
 
 
