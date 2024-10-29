@@ -74,6 +74,11 @@ void ConsoleWindow::render() {
             _showEditorWindows = !_showEditorWindows; // Toggle visibility
         }
 
+        // Quit Button
+        if (ImGui::Button("Quit")) {
+            _shouldQuit = true; // Set the quit flag
+        }
+
         ImGui::EndMainMenuBar();
     }
 

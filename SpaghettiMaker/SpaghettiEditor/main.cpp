@@ -21,6 +21,7 @@
 #include "spaghettiEngine/Transform.h"
 
 
+
 using namespace std;
 
 using hrclock = chrono::high_resolution_clock;
@@ -298,17 +299,26 @@ int main(int argc, char** argv) {
     
 
     while (window.processEvents(&console) && window.isOpen()) {
+        // Check if we should quit
+        if (console._shouldQuit == true) {
+            break; // Exit the loop if the quit flag is set
+        }
+
         const auto t0 = hrclock::now();
         display_func();
         reshape_func(WINDOW_SIZE.x, WINDOW_SIZE.y);
         console.render();
         window.swapBuffers();
+
         const auto t1 = hrclock::now();
         const auto dt = t1 - t0;
-        if (dt < FRAME_DT) this_thread::sleep_for(FRAME_DT - dt);
+        if (dt < FRAME_DT) {
+            std::this_thread::sleep_for(FRAME_DT - dt);
+        }
 
-        if (scene) scene->Update();
-
+        if (scene) {
+            scene->Update();
+        }
     }
 
 
