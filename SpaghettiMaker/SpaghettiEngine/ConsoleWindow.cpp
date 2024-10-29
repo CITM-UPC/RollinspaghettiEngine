@@ -15,6 +15,7 @@
 #include <psapi.h> 
 #endif
 
+// Constructor
 ConsoleWindow::ConsoleWindow(SDL_Window* window, void* context) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -27,8 +28,10 @@ ConsoleWindow::ConsoleWindow(SDL_Window* window, void* context) {
 
     // Initialize FPS tracking variables
     lastFrameTime = std::chrono::high_resolution_clock::now();
+    _showEditorWindows = true; // Initialize visibility state
 }
 
+// Destructor
 ConsoleWindow::~ConsoleWindow() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
@@ -46,133 +49,133 @@ size_t ConsoleWindow::getMemoryUsage() {
     return 0; // Return 0 if we can't get the memory usage
 }
 
+// Render method
 void ConsoleWindow::render() {
     // Start new frames for OpenGL and SDL
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
-    // Begin a new ImGui window
-    ImGui::Begin("Editor");  // Open a new ImGui window with a custom title
-
-    // Add custom content to the window
-    ImGui::Text("Main Menu");  // Display some text
-
-    // GitHub Link button
-    if (ImGui::Button("GitHub Link")) {
-        SDL_OpenURL("https://github.com/CITM-UPC/RollinspaghettiEngine");  // Replace with your actual URL
-    }
-
-
+    // Main Menu Bar
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("GameObjects")) {
             PrimitiveMenu::ShowPrimitiveMenu(_activeScene);
-            if (ImGui::Button("Create cube"))
-            {
+            if (ImGui::Button("Create cube")) {
                 GameObject* cube = PrimitiveGenerator::CreateCube();
             }
-            if (ImGui::Button("Create sphere"))
-            {
-                GameObject* cube = PrimitiveGenerator::CreateSphere();
+            if (ImGui::Button("Create sphere")) {
+                GameObject* sphere = PrimitiveGenerator::CreateSphere();
             }
-
-
             ImGui::EndMenu();
         }
-        // ... rest of your menu items ...
+
+        // Toggle Editor Windows Button
+        if (ImGui::Button(_showEditorWindows ? "Hide Editor Windows" : "Show Editor Windows")) {
+            _showEditorWindows = !_showEditorWindows; // Toggle visibility
+        }
+
         ImGui::EndMainMenuBar();
     }
 
-    if (ImGui::Button("Create cube"))
-    {
-        GameObject* cube = PrimitiveGenerator::CreateCube();
-    }
+    // Render editor windows only if they are visible
+    if (_showEditorWindows) {
+        ImGui::Begin("Editor");  // Open a new ImGui window with a custom title
 
-    ImGui::SameLine();
-    // About Us button
-    if (ImGui::Button("About Us")) {
-        ImGui::OpenPopup("AboutUsPopup");  // Open the About Us popup
-    }
+        // Add custom content to the window
+        ImGui::Text("Main Menu");  // Display some text
 
-    ImGui::SameLine();
-    // Config Window button
-    if (ImGui::Button("Config Window")) {
-        ImGui::OpenPopup("ConfigWindow");  // Open the Config Window popup
-    }
-
-    // About Us popup
-    if (ImGui::BeginPopupModal("AboutUsPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Rollinspaghetti Engine\nVersion 1.0\n\nA custom game engine developed by Yiwei Ye, Andrea Dona y Pablo Longaron");
-        ImGui::Text("This engine is designed to show our learning in the programming area,");
-        ImGui::Text("providing tools for rendering and loading textures");
-
-        if (ImGui::Button("Close")) {
-            ImGui::CloseCurrentPopup();
+        // GitHub Link button
+        if (ImGui::Button("GitHub Link")) {
+            SDL_OpenURL("https://github.com/CITM-UPC/RollinspaghettiEngine");  // Replace with your actual URL
         }
 
-        ImGui::EndPopup();
-    }
-
-    // Config Window popup (contains FPS graph and system info)
-    if (ImGui::BeginPopupModal("ConfigWindow", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        // Display the FPS graph in the popup
-       
-        // FPS calculation
-         auto now = std::chrono::high_resolution_clock::now();
-         float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(now - lastFrameTime).count();
-         lastFrameTime = now;
-
-          // Calculate FPS and store in buffer
-          float fps = 1.0f / deltaTime;
-          if (fpsHistory.size() >= maxFPSHistorySize) {
-             fpsHistory.erase(fpsHistory.begin());
-          }
-          fpsHistory.push_back(fps);
-
-    // Display current FPS
-         ImGui::Text("FPS: %.1f", fps);  // Display current FPS
-        ImGui::PlotLines("FPS History", fpsHistory.data(), fpsHistory.size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 100));
-
-        // Display hardware and software information
-        ImGui::Text("Hardware and Software Information:");
-
-        // CPU and GPU information
-        ImGui::Text("CPU Cores: %d", SDL_GetCPUCount());
-        ImGui::Text("System RAM: %d MB", SDL_GetSystemRAM());
-        ImGui::Text("CPU Cache Line Size: %d bytes", SDL_GetCPUCacheLineSize());
-
-        // SDL Version
-        SDL_version compiled, linked;
-        SDL_VERSION(&compiled);
-        SDL_GetVersion(&linked);
-        ImGui::Text("SDL Version: %d.%d.%d (compiled), %d.%d.%d (linked)",
-            compiled.major, compiled.minor, compiled.patch,
-            linked.major, linked.minor, linked.patch);
-
-        // OpenGL Version
-        const GLubyte* glVersion = glGetString(GL_VERSION);
-        ImGui::Text("OpenGL Version: %s", glVersion);
-
-        // Memory consumption information
-        size_t memoryUsage = getMemoryUsage(); // Get memory usage
-        ImGui::Text("Memory Usage: %zu bytes (%.2f MB)", memoryUsage, memoryUsage / (1024.0f * 1024.0f));
-
-        // Close button for Config Window popup
-        if (ImGui::Button("Close")) {
-            ImGui::CloseCurrentPopup();
+        // About Us button
+        if (ImGui::Button("About Us")) {
+            ImGui::OpenPopup("AboutUsPopup");  // Open the About Us popup
         }
-        ImGui::EndPopup();
+
+        // Config Window button
+        if (ImGui::Button("Config Window")) {
+            ImGui::OpenPopup("ConfigWindow");  // Open the Config Window popup
+        }
+
+        // Handle About Us popup
+        if (ImGui::BeginPopupModal("AboutUsPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::Text("Rollinspaghetti Engine\nVersion 1.0\n\nA custom game engine developed by Yiwei Ye, Andrea Dona y Pablo Longaron");
+            ImGui::Text("This engine is designed to show our learning in the programming area,");
+            ImGui::Text("providing tools for rendering and loading textures");
+            if (ImGui::Button("Close")) {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+
+        // Handle Config Window popup
+        if (ImGui::BeginPopupModal("ConfigWindow", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+            
+           
+                // Display the FPS graph in the popup
+
+                // FPS calculation
+                auto now = std::chrono::high_resolution_clock::now();
+                float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(now - lastFrameTime).count();
+                lastFrameTime = now;
+
+                // Calculate FPS and store in buffer
+                float fps = 1.0f / deltaTime;
+                if (fpsHistory.size() >= maxFPSHistorySize) {
+                    fpsHistory.erase(fpsHistory.begin());
+                }
+                fpsHistory.push_back(fps);
+
+                // Display current FPS
+                ImGui::Text("FPS: %.1f", fps);  // Display current FPS
+                ImGui::PlotLines("FPS History", fpsHistory.data(), fpsHistory.size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 100));
+
+                // Display hardware and software information
+                ImGui::Text("Hardware and Software Information:");
+
+                // CPU and GPU information
+                ImGui::Text("CPU Cores: %d", SDL_GetCPUCount());
+                ImGui::Text("System RAM: %d MB", SDL_GetSystemRAM());
+                ImGui::Text("CPU Cache Line Size: %d bytes", SDL_GetCPUCacheLineSize());
+
+                // SDL Version
+                SDL_version compiled, linked;
+                SDL_VERSION(&compiled);
+                SDL_GetVersion(&linked);
+                ImGui::Text("SDL Version: %d.%d.%d (compiled), %d.%d.%d (linked)",
+                    compiled.major, compiled.minor, compiled.patch,
+                    linked.major, linked.minor, linked.patch);
+
+                // OpenGL Version
+                const GLubyte* glVersion = glGetString(GL_VERSION);
+                ImGui::Text("OpenGL Version: %s", glVersion);
+
+                // Memory consumption information
+                size_t memoryUsage = getMemoryUsage(); // Get memory usage
+                ImGui::Text("Memory Usage: %zu bytes (%.2f MB)", memoryUsage, memoryUsage / (1024.0f * 1024.0f));
+
+
+
+
+
+
+            if (ImGui::Button("Close")) {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+
+        ImGui::End();  // End the ImGui window
     }
-
-   
-
-    ImGui::End();  // End the ImGui window
 
     // Render the ImGui frame
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+// Event processing
 void ConsoleWindow::processEvent(const SDL_Event& event) {
     ImGui_ImplSDL2_ProcessEvent(&event);
 }
