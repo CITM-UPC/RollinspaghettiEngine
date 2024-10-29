@@ -74,13 +74,13 @@ struct Cube {
 
     void draw() const {
         glPushMatrix();
-        glMultMatrixd(&transform.mat()[0][0]);
+        glMultMatrixf(&transform.mat()[0][0]);
         glColor3ub(color.r, color.g, color.b);
         glEnableClientState(GL_VERTEX_ARRAY);
         glBindBuffer(GL_ARRAY_BUFFER, vBID);
         glVertexPointer(3, GL_DOUBLE, 0, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBID);
-        glDrawElements(GL_TRIANGLES, index_data.size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(index_data.size()), GL_UNSIGNED_INT, 0);
         glDisableClientState(GL_VERTEX_ARRAY);
         glPopMatrix();
     }
@@ -255,6 +255,37 @@ void Update() {
     _activeScene->Update();
     _activeScene->Render();
 }
+
+//El rayo para ver donde apunta el raton Camera Zoom
+void raycastFromMouse(int mouseX, int mouseY) {
+    // Obtener la matriz de proyección y la vista de la cámara
+    glm::mat4 projection = camera.projection();
+    glm::mat4 view = camera.view();
+    glm::vec4 viewport(0.0f, 0.0f, WINDOW_SIZE.x, WINDOW_SIZE.y);
+
+    // Convertir la posición del ratón a coordenadas de espacio normalizado
+    glm::vec3 mousePosNear = glm::unProject(
+        glm::vec3(mouseX, WINDOW_SIZE.y - mouseY, 0.0f), // Posición del mouse en el "near plane"
+        view,
+        projection,
+        viewport
+    );
+
+    glm::vec3 mousePosFar = glm::unProject(
+        glm::vec3(mouseX, WINDOW_SIZE.y - mouseY, 1.0f), // Posición del mouse en el "far plane"
+        view,
+        projection,
+        viewport
+    );
+
+    // Calcular la dirección del rayo
+    glm::vec3 rayDirection = glm::normalize(mousePosFar - mousePosNear);
+
+    // Apuntar la cámara en esa dirección
+    camera.lookAt(camera.position() + rayDirection);
+}
+
+
 void cameramovement(const SDL_Event& event) {
     
    
@@ -321,6 +352,18 @@ void cameramovement(const SDL_Event& event) {
 
     }
 
+    //Right Click
+
+    if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
+        int mouseX = event.button.x;
+        int mouseY = event.button.y;
+
+        // Calcular el rayo en el espacio 3D a partir de la posición del ratón
+        raycastFromMouse(mouseX, mouseY);
+    }
+
+
+
 
 }
 
@@ -365,8 +408,9 @@ int main(int argc, char** argv) {
    // casa.Init();
 	//casa.transform.translate(vec3(0, 1, -1));
     
+    IEventProcessor* event_processor = &console;
 
-    while (window.processEvents(&console) && window.isOpen()) {
+    while (window.isOpen()) {
         if (console._shouldQuit) break;
 
         const auto t0 = hrclock::now();
@@ -401,6 +445,7 @@ int main(int argc, char** argv) {
         //Camera Zoom
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
+            event_processor->processEvent(event);
             cameramovement(event); // Llama a cameramovement pasando el evento
             if (event.type == SDL_QUIT) window.close(); // Otras condiciones para cerrar la ventana
         }
