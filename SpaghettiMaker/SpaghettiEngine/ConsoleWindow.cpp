@@ -62,9 +62,13 @@ void ConsoleWindow::render() {
             PrimitiveMenu::ShowPrimitiveMenu(_activeScene);
             if (ImGui::Button("Create cube")) {
                 GameObject* cube = PrimitiveGenerator::CreateCube();
+                _activeScene->CreateGameObject(cube->GetName().c_str(), nullptr);  // Add to scene
+
             }
-            if (ImGui::Button("Create sphere")) {
-                GameObject* sphere = PrimitiveGenerator::CreateSphere();
+            if (ImGui::MenuItem("Create sphere"))
+            {
+                GameObject* cube = PrimitiveGenerator::CreateSphere();
+                _activeScene->CreateGameObject(cube->GetName().c_str(), nullptr);  // Add to scene
             }
             ImGui::EndMenu();
         }

@@ -8,7 +8,7 @@
 class PrimitiveGenerator {
 public:
     // Primitive creation methods
-    static GameObject* CreateCube(const char* name = "Cube", float size = 10.0f);
+    static GameObject* CreateCube(const char* name = "Cube", float size = 5.0f);
     static GameObject* CreateSphere(const char* name = "Sphere", float radius = 10.0f, int segments = 32);
     //static GameObject* CreateCylinder(const char* name = "Cylinder", float radius = 1.0f, float height = 2.0f, int segments = 32);
     //static GameObject* CreatePlane(const char* name = "Plane", float width = 1.0f, float height = 1.0f);

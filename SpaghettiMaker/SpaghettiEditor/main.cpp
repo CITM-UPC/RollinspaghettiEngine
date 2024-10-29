@@ -280,8 +280,7 @@ int main(int argc, char** argv) {
     cube.transform.translate(vec3(0, 1, 1));
 
     // Init camera
-
-    camera.transform().pos() = vec3(0, 1, 10);
+    camera.transform().pos() = vec3(0, 1, 5);
     camera.transform().rotate(glm::radians(180.0), vec3(0, 1, 0));
 
     
@@ -305,6 +304,22 @@ int main(int argc, char** argv) {
         }
 
         const auto t0 = hrclock::now();
+        // Clear buffers
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Set up view/projection matrices
+        glMatrixMode(GL_PROJECTION);
+        glLoadMatrixd(glm::value_ptr(camera.projection()));
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadMatrixd(glm::value_ptr(camera.view()));
+
+        // Render scene
+        if (scene) {
+            scene->Update();
+            scene->Render();  // Add this line
+        }
+
         display_func();
         reshape_func(WINDOW_SIZE.x, WINDOW_SIZE.y);
         console.render();
@@ -312,9 +327,9 @@ int main(int argc, char** argv) {
 
         const auto t1 = hrclock::now();
         const auto dt = t1 - t0;
-        if (dt < FRAME_DT) {
-            std::this_thread::sleep_for(FRAME_DT - dt);
-        }
+        if (dt < FRAME_DT) this_thread::sleep_for(FRAME_DT - dt);
+
+        if (scene) scene->Update();
 
         if (scene) {
             scene->Update();

@@ -42,12 +42,10 @@ public:
     }
 
     template<typename T>
-    std::shared_ptr<T> GetComponent() {
-        static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
-
-        for (auto& component : _components) {
-            if (auto derived = std::dynamic_pointer_cast<T>(component)) {
-                return derived;
+    std::shared_ptr<T> GetComponent() const {
+        for (const auto& component : _components) {
+            if (auto result = std::dynamic_pointer_cast<T>(component)) {
+                return result;
             }
         }
         return nullptr;
