@@ -1,4 +1,3 @@
-// SpaghettiEngine/Graphics/TextureManager.cpp
 #include "TextureManager.h"
 #include "imgui.h"
 #include <filesystem>
@@ -95,7 +94,10 @@ void TextureManager::OnImGuiRender() {
             if (ImGui::TreeNode(displayName.c_str())) {
                 ImGui::Text("Path: %s", path.c_str());
                 ImGui::Text("Size: %dx%d", texture->GetWidth(), texture->GetHeight());
-                ImGui::Text("References: %d", static_cast<int>(texture->use_count()));
+
+                // Fixed: Get use_count from the shared_ptr in the cache
+                auto refCount = _textureCache[path].use_count();
+                ImGui::Text("References: %d", static_cast<int>(refCount));
 
                 // Preview texture
                 ImTextureID texId = reinterpret_cast<ImTextureID>(static_cast<uintptr_t>(texture->GetID()));

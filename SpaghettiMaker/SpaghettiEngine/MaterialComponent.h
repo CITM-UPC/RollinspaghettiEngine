@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "Texture.h"
+#include "TextureManager.h"
 #include "types.h"
 
 class MaterialComponent : public Component {
@@ -14,10 +15,12 @@ private:
     // Textures
     TexturePtr _diffuseMap;
     bool _useCheckerTexture = false;
-    static TexturePtr s_checkerTexture; // Shared checker texture
+    std::string _texturePath;
 
 public:
-    MaterialComponent() : Component("Material") {}
+    MaterialComponent() : Component("Material") {
+        _diffuseMap = TEXTURE_MANAGER->GetDefaultTexture();
+    }
 
     // Component interface
     void OnStart() override;
@@ -30,10 +33,24 @@ public:
     void SetSpecular(const vec3& color) { _specular = color; }
     void SetShininess(double value) { _shininess = value; }
 
-    // Texture management
-    bool SetDiffuseTexture(const std::string& path);
-    void SetUseCheckerTexture(bool use);
-    bool HasDiffuseTexture() const { return _diffuseMap != nullptr || _useCheckerTexture; }
+    // Updated texture management
+    bool SetDiffuseTexture(const std::string& path) {
+        _diffuseMap = TEXTURE_MANAGER->LoadTexture(path);
+        if (_diffuseMap) {
+            _texturePath = path;
+            _useCheckerTexture = false;
+            return true;
+        }
+        return false;
+    }
+
+    void SetUseCheckerTexture(bool use) {
+        _useCheckerTexture = use;
+        if (use) {
+            _diffuseMap = TEXTURE_MANAGER->GetDefaultTexture();
+            _texturePath.clear();
+        }
+    }
 
     // Property getters
     const vec3& GetAmbient() const { return _ambient; }
