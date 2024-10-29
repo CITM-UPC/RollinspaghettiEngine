@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include "RendererComponent.h"
+
 
 class Scene {
 private:
@@ -25,6 +27,24 @@ public:
     void Update();
     void Stop();
     void Pause(bool pause);
+
+    void Render() {
+        // Set up OpenGL state
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+
+        // Setup basic lighting
+        GLfloat lightPos[] = { 0.0f, 10.0f, 0.0f, 1.0f };
+        glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+
+        // Render all GameObjects
+        for (const auto& gameObject : _gameObjects) {
+            if (auto renderer = gameObject->GetComponent<RendererComponent>()) {
+                renderer->OnUpdate();
+            }
+        }
+    }
 
     // GameObject management
     GameObject* CreateGameObject(const char* name = "GameObject", GameObject* parent = nullptr);

@@ -6,6 +6,7 @@
 #include <string>
 #include <typeinfo>
 #include <algorithm>
+#include "Renderer.h"
 
 class GameObject {
 private:

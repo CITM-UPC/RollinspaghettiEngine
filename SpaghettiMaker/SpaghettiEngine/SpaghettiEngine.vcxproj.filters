@@ -93,6 +93,9 @@
     <ClInclude Include="PrimitiveMenu.h">
       <Filter>Primitives</Filter>
     </ClInclude>
+    <ClInclude Include="RendererComponent.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">

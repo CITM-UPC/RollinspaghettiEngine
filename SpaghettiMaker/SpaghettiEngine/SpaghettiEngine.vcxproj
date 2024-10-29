@@ -33,6 +33,7 @@
     <ClInclude Include="PrimitiveGenerator.h" />
     <ClInclude Include="PrimitiveMenu.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RendererComponent.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />

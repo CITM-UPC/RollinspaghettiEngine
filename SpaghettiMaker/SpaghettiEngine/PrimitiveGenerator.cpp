@@ -1,7 +1,9 @@
 #include "PrimitiveGenerator.h"
 #include "MaterialComponent.h"
 #include "TransformComponent.h"
+#include "Renderer.h"
 #include "GameObject.h"
+#include "RendererComponent.h"
 #include <glm/gtc/constants.hpp>
 
 GameObject* PrimitiveGenerator::CreateCube(const char* name, float size) {
@@ -15,9 +17,17 @@ GameObject* PrimitiveGenerator::CreateCube(const char* name, float size) {
     auto transform = cube->AddComponent<TransformComponent>();
     auto mesh = cube->AddComponent<MeshComponent>();
     auto material = cube->AddComponent<MaterialComponent>();
+    auto renderer = cube->AddComponent<RendererComponent>();  // Add renderer
+
 
     // Set mesh data
     mesh->SetMeshData(vertices, indices);
+
+    // Initialize components
+    transform->OnStart();
+    mesh->OnStart();
+    material->OnStart();
+    renderer->OnStart();
 
     return cube;
 }
