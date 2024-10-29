@@ -18,6 +18,7 @@
 #include "spaghettiEngine/PrimitiveGenerator.h"
 #include "spaghettiEngine/GameObject.h"
 #include "spaghettiEngine/Scene.h"
+#include "spaghettiEngine/Transform.h"
 
 
 using namespace std;
@@ -217,7 +218,7 @@ static void display_func() {
     glLoadMatrixd(&camera.view()[0][0]);
     drawFloorGrid(26, 1.0);
     cube.transform.rotate(0.001, vec3(1, 1, 0));
-   // cube.draw();
+    cube.draw();
     //casa.transform.rotate(0.001, vec3(1, 1, 0));
     //casa.draw();
 }
@@ -235,7 +236,26 @@ void Update() {
     _activeScene->Update();
 }
 
+void cameramovement() {
+    
+   
+    const Uint8* keystates = SDL_GetKeyboardState(nullptr);
+    if (keystates[SDL_SCANCODE_W]) {
+        camera.transform().translate(vec3(0, 0, -1));
+    }
+    if (keystates[SDL_SCANCODE_S]) {
+        camera.transform().translate(vec3(0, 0, 1));
+    }
+    if (keystates[SDL_SCANCODE_A]) {
+        camera.transform().translate(vec3(-1, 0, 0));
+    }
+    if (keystates[SDL_SCANCODE_D]) {
+        camera.transform().translate(vec3(1, 0, 0));
+    }
+}
+
 int main(int argc, char** argv) {
+
     MyWindow window("ImGUI with SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
     //MyGUI gui(window.windowPtr(), window.contextPtr());
     ConsoleWindow console(window.windowPtr(), window.contextPtr());
@@ -259,8 +279,14 @@ int main(int argc, char** argv) {
     cube.transform.translate(vec3(0, 1, 1));
 
     // Init camera
-    camera.transform().pos() = vec3(0, 1, 5);
+
+    camera.transform().pos() = vec3(0, 1, 10);
     camera.transform().rotate(glm::radians(180.0), vec3(0, 1, 0));
+
+    
+	cameramovement();
+	
+   
 
 	//Camera movement
 
