@@ -396,7 +396,7 @@ int main(int argc, char** argv) {
     aiAttachLogStream(&stream);
 
     // Create a cube and add it to the scene
-    GameObject* cube = PrimitiveGenerator::CreateCube("TestCube", 10.0f);
+    GameObject* cube = PrimitiveGenerator::CreateCube("TestCube", 5.0f);
     scene->CreateGameObject("TestCube", cube);
 
     const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";

@@ -4,6 +4,9 @@
 #include "TransformComponent.h"
 #include <filesystem>
 #include <iostream>
+#include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path) {
     // Create Assimp importer
@@ -55,11 +58,41 @@ GameObject* ModelLoader::ProcessNode(Scene* scene, aiNode* node, const aiScene* 
 
     // Decompose transform
     vec3 scale;
-    glm::quat rotation;
+    glm::dquat rotation;
     vec3 translation;
     vec3 skew;
     vec4 perspective;
-    glm::decompose(glmMat, scale, rotation, translation, skew, perspective);
+
+
+    // Use explicit types for decompose
+    bool success = glm::decompose(
+        glmMat,
+        scale,
+        rotation,
+        translation,
+        skew,
+        perspective
+    );
+    if (success) {
+        // Set transform values
+        transform->SetLocalPosition(translation);
+        transform->SetLocalRotation(rotation);
+        transform->SetLocalScale(scale);
+    }
+    else {
+        std::cerr << "Failed to decompose transformation matrix for node: " << node->mName.C_Str() << std::endl;
+        // Set default transform values
+        transform->SetLocalPosition(vec3(0.0));
+        transform->SetLocalRotation(glm::dquat(1.0, 0.0, 0.0, 0.0));
+        transform->SetLocalScale(vec3(1.0));
+    }
+
+    if (!success) {
+        // Set default transform values
+        transform->SetLocalPosition(vec3(0.0));
+        transform->SetLocalRotation(glm::dquat(1.0, 0.0, 0.0, 0.0));
+        transform->SetLocalScale(vec3(1.0));
+    }
 
     // Set transform values
     transform->SetLocalPosition(translation);
