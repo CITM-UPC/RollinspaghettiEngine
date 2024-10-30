@@ -18,6 +18,11 @@
 #include "spaghettiEngine/PrimitiveGenerator.h"
 #include "spaghettiEngine/GameObject.h"
 #include "spaghettiEngine/Scene.h"
+#include "spaghettiEngine/ModelLoader.h"
+#include <assimp/DefaultLogger.hpp>  // Add this for logging functions
+#include <assimp/LogStream.hpp>      // Add this for logging functions
+#include <assimp/cimport.h>          // Add this for C-style functions like aiDetachAllLogStreams
+
 #include "spaghettiEngine/Transform.h"
 
 
@@ -383,18 +388,26 @@ int main(int argc, char** argv) {
     // Initialize the texture manager
     TEXTURE_MANAGER->Initialize();
 
+    // Set up assimp logging
+    Assimp::Importer importer;
+    // Stream log messages to Debug window
+    struct aiLogStream stream;
+    stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
+    aiAttachLogStream(&stream);
+
     // Create a cube and add it to the scene
     GameObject* cube = PrimitiveGenerator::CreateCube("TestCube", 10.0f);
     scene->CreateGameObject("TestCube", cube);
 
-
+    const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";
+    GameObject* model = ModelLoader::LoadModel(scene, modelPath);
     //Cube
     //cube.color = glm::u8vec3(0, 0, 255);
     //cube.Init();
     //cube.transform.translate(vec3(0, 1, 1));
 
     // Init camera
-    camera.transform().pos() = vec3(0, 1, 5);
+    camera.transform().pos() = vec3(0, 5, 10);
     camera.transform().rotate(glm::radians(180.0), vec3(0, 1, 0));
  
 
@@ -405,6 +418,27 @@ int main(int argc, char** argv) {
     //casa.Geometry("../SpaghettiEngine/BakerHouse.fbx");
    // casa.Init();
 	//casa.transform.translate(vec3(0, 1, -1));
+
+    // After scene creation and before the main loop
+    if (scene) {
+        // Load initial model (baker house)
+        const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";  // Adjust path as needed
+        GameObject* model = ModelLoader::LoadModel(scene, modelPath);
+        if (model) {
+            std::cout << "Successfully loaded baker house model" << std::endl;
+
+            // Optionally position the model
+            if (auto transform = model->GetComponent<TransformComponent>()) {
+                transform->SetLocalPosition(vec3(0, 0, 0));
+                transform->SetLocalScale(vec3(1, 1, 1));
+            }
+        }
+        else {
+            std::cerr << "Failed to load baker house model" << std::endl;
+        }
+    }
+
+
     
     IEventProcessor* event_processor = &console;
 
@@ -445,11 +479,39 @@ int main(int argc, char** argv) {
         while (SDL_PollEvent(&event)) {
             event_processor->processEvent(event);
             cameramovement(event); // Llama a cameramovement pasando el evento
-            if (event.type == SDL_QUIT) window.close(); // Otras condiciones para cerrar la ventana
+
+            switch (event.type) {
+            case SDL_QUIT:
+                window.close();
+                break;
+
+            case SDL_DROPFILE: {
+                char* droppedFilePath = event.drop.file;
+                if (droppedFilePath) {
+                    // Log file drop
+                    std::cout << "File dropped: " << droppedFilePath << std::endl;
+
+                    // Handle the dropped file
+                    if (scene) {
+                        scene->HandleFileDrop(droppedFilePath);
+                    }
+                    SDL_free(droppedFilePath);
+                }
+                break;
+            }
+                if (event.type == SDL_QUIT) window.close(); // Otras condiciones para cerrar la ventana             // ... other event cases
+            }
+
+
+           
         }
     }
 
-
+    // At the end of main(), before return
+    // Cleanup
+    TEXTURE_MANAGER->Cleanup();
+    TEXTURE_MANAGER->Destroy();
+    aiDetachAllLogStreams();
     delete scene;
     return 0;
 }
