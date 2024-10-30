@@ -379,6 +379,7 @@ int main(int argc, char** argv) {
     // Create and initialize scene
     Scene* scene = new Scene("Main Scene");
     console.SetActiveScene(scene);  // Set the active scene
+	scene->SetCamera(&camera);     // Set the camera for the scene
 
     init_openGL();
     //DevIL initialization
@@ -399,8 +400,8 @@ int main(int argc, char** argv) {
     GameObject* cube = PrimitiveGenerator::CreateCube("TestCube", 5.0f);
     scene->CreateGameObject("TestCube", cube);
 
-    const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";
-    GameObject* model = ModelLoader::LoadModel(scene, modelPath);
+    //const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";
+    //GameObject* model = ModelLoader::LoadModel(scene, modelPath);
     //Cube
     //cube.color = glm::u8vec3(0, 0, 255);
     //cube.Init();
@@ -420,23 +421,23 @@ int main(int argc, char** argv) {
 	//casa.transform.translate(vec3(0, 1, -1));
 
     // After scene creation and before the main loop
-    if (scene) {
-        // Load initial model (baker house)
-        const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";  // Adjust path as needed
-        GameObject* model = ModelLoader::LoadModel(scene, modelPath);
-        if (model) {
-            std::cout << "Successfully loaded baker house model" << std::endl;
+    //if (scene) {
+    //    // Load initial model (baker house)
+    //    const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";  // Adjust path as needed
+    //    GameObject* model = ModelLoader::LoadModel(scene, modelPath);
+    //    if (model) {
+    //        std::cout << "Successfully loaded baker house model" << std::endl;
 
-            // Optionally position the model
-            if (auto transform = model->GetComponent<TransformComponent>()) {
-                transform->SetLocalPosition(vec3(0, 0, 0));
-                transform->SetLocalScale(vec3(1, 1, 1));
-            }
-        }
-        else {
-            std::cerr << "Failed to load baker house model" << std::endl;
-        }
-    }
+    //        // Optionally position the model
+    //        if (auto transform = model->GetComponent<TransformComponent>()) {
+    //            transform->SetLocalPosition(vec3(0, 0, 0));
+    //            transform->SetLocalScale(vec3(0.1, 0.1, 0.1));
+    //        }
+    //    }
+    //    else {
+    //        std::cerr << "Failed to load baker house model" << std::endl;
+    //    }
+    //}
 
 
     

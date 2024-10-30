@@ -4,6 +4,10 @@
 #include <algorithm>
 #include <iostream>
 #include <filesystem>
+#include <GL/glew.h>
+#include "Camera.h"
+
+
 
 Scene::Scene(const char* name) : _name(name) {
     // Create root GameObject
@@ -90,7 +94,9 @@ void Scene::Render() {
     glPopAttrib();
     
     // Backup of old rendering code
-    
+
+    //if (!_root) return;
+    //
     //// Save OpenGL state
     //GLboolean lighting = glIsEnabled(GL_LIGHTING);
     //GLboolean texture2D = glIsEnabled(GL_TEXTURE_2D);
@@ -115,7 +121,7 @@ void Scene::Render() {
     //        renderer->OnUpdate();
     //    }
     //}
-
+    //RenderGameObject(_root);
     //// Restore OpenGL state
     //if (!lighting) glDisable(GL_LIGHTING);
     //if (!texture2D) glDisable(GL_TEXTURE_2D);
@@ -146,6 +152,20 @@ void Scene::RenderGameObject(GameObject* gameObject) {
     }
 
     glPopMatrix();
+}
+
+void Scene::FocusOnGameObject(GameObject* gameObject) {
+    if (!gameObject || !_camera) return;
+
+    auto transform = gameObject->GetComponent<TransformComponent>();
+    if (!transform) return;
+
+    // Get the position of the object
+    vec3 objectPos = transform->GetWorldPosition();
+
+    // Move camera to look at the object
+    _camera->transform().pos() = objectPos + vec3(0, 2, 5); // Position camera above and behind
+    _camera->lookAt(objectPos);
 }
 
 void Scene::HandleFileDrop(const char* path) {

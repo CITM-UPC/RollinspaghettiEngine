@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include "RendererComponent.h"
+#include "Camera.h"
 
 
 class Scene {
@@ -13,6 +14,7 @@ private:
     GameObject* _root;  // Root GameObject that holds the scene hierarchy
     std::vector<std::shared_ptr<GameObject>> _gameObjects; // All GameObjects in scene
     GameObject* _selectedGameObject = nullptr;
+	Camera* _camera = nullptr;
 
     // Track active state
     bool _isPlaying = false;
@@ -21,6 +23,9 @@ private:
 public:
     Scene(const char* name = "New Scene");
     ~Scene();
+
+    // Add camera setter
+    void SetCamera(Camera* camera) { _camera = camera; }
 
     // Scene lifecycle
     void Start();
@@ -47,6 +52,8 @@ public:
     bool IsPlaying() const { return _isPlaying; }
     bool IsPaused() const { return _isPaused; }
     const std::string& GetName() const { return _name; }
+
+	void FocusOnGameObject(GameObject* gameObject);
 
     // File handling
     //void HandleFileDrop(const char* path);
