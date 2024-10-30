@@ -22,7 +22,9 @@ GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path) {
         aiProcess_CalcTangentSpace |
         aiProcess_JoinIdenticalVertices |
         aiProcess_SortByPType |
-        aiProcess_FlipUVs  // OpenGL convention
+        aiProcess_FlipUVs | // OpenGL convention
+        aiProcess_GlobalScale |  // Add global scaling
+        aiProcess_PreTransformVertices  // Pre-transform vertices to fix scaling issues
     );
 
     // Check for errors
@@ -34,6 +36,12 @@ GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path) {
     // Create root game object with the file name
     std::string fileName = std::filesystem::path(path).stem().string();
     GameObject* rootObject = scene->CreateGameObject(fileName.c_str());
+
+    // Add initial transform to root
+    auto rootTransform = rootObject->AddComponent<TransformComponent>();
+
+    // Set a default scale that works well with most models
+    rootTransform->SetLocalScale(vec3(0.1));  // Scale down by default
 
     // Process the root node
     ProcessNode(scene, scene_ai->mRootNode, scene_ai, rootObject);
@@ -127,36 +135,20 @@ void ModelLoader::ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScen
     std::cout << "Number of Faces: " << mesh->mNumFaces << std::endl;
 
     // Process vertices
+    vertices.reserve(mesh->mNumVertices);
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
 
-        // Position
+        // Convert to GLM vectors
         vertex.position = AssimpToGlm(mesh->mVertices[i]);
-        std::cout << "Vertex " << i << " Position: "
-            << vertex.position.x << ", "
-            << vertex.position.y << ", "
-            << vertex.position.z << std::endl;
 
-        // Normals
         if (mesh->HasNormals()) {
-            vertex.normal = AssimpToGlm(mesh->mNormals[i]);
-            std::cout << "Vertex " << i << " Normal: "
-                << vertex.normal.x << ", "
-                << vertex.normal.y << ", "
-                << vertex.normal.z << std::endl;
+            vertex.normal = glm::normalize(AssimpToGlm(mesh->mNormals[i]));
         }
 
-        // Texture coordinates
         if (mesh->mTextureCoords[0]) {
             vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
             vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
-            std::cout << "Vertex " << i << " Texture Coords: "
-                << vertex.texCoords.x << ", "
-                << vertex.texCoords.y << std::endl;
-        }
-        else {
-            vertex.texCoords = vec2(0.0f, 0.0f);
-            std::cout << "Vertex " << i << " Texture Coords: 0.0, 0.0" << std::endl;
         }
 
         vertices.push_back(vertex);

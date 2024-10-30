@@ -26,6 +26,27 @@ void MeshComponent::SetupMesh() {
     glGenBuffers(1, &_vbo);
     glGenBuffers(1, &_ebo);
 
+    // Convert double precision vertices to float for OpenGL
+    std::vector<float> vertexData;
+    vertexData.reserve(_vertices.size() * 8); // 3 for pos, 3 for normal, 2 for UV
+
+    for (const auto& vertex : _vertices) {
+        // Position
+        vertexData.push_back(static_cast<float>(vertex.position.x));
+        vertexData.push_back(static_cast<float>(vertex.position.y));
+        vertexData.push_back(static_cast<float>(vertex.position.z));
+
+        // Normal
+        vertexData.push_back(static_cast<float>(vertex.normal.x));
+        vertexData.push_back(static_cast<float>(vertex.normal.y));
+        vertexData.push_back(static_cast<float>(vertex.normal.z));
+
+        // TexCoords
+        vertexData.push_back(static_cast<float>(vertex.texCoords.x));
+        vertexData.push_back(static_cast<float>(vertex.texCoords.y));
+    }
+
+
     // Bind VAO first
     glBindVertexArray(_vao);
 
@@ -75,25 +96,23 @@ void MeshComponent::OnUpdate() {
     if (!transform) return;
 
     // Store current OpenGL state
-    GLboolean prevLighting = glIsEnabled(GL_LIGHTING);
-    GLboolean prevTexture2D = glIsEnabled(GL_TEXTURE_2D);
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glPushMatrix();
+
+    // Apply transform
+    const mat4& worldMatrix = transform->GetWorldMatrix();
+    glMultMatrixd(glm::value_ptr(worldMatrix));
+
+    // Setup rendering state
+    glEnable(GL_DEPTH_TEST);
+    //if (!_wireframeMode) {
+    //    glEnable(GL_LIGHTING);
+    //}
+    glEnable(GL_LIGHTING);
+
 
     // Draw mesh using vertex buffer objects
     glBindVertexArray(_vao);
-
-    // Enable vertex arrays
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    // Set up vertex pointers
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glVertexPointer(3, GL_DOUBLE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-    glNormalPointer(GL_DOUBLE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-    glTexCoordPointer(2, GL_DOUBLE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
-
-    // Draw elements
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, 0);
 
     // Cleanup state
@@ -109,31 +128,27 @@ void MeshComponent::OnUpdate() {
     //glBindVertexArray(_vao);
     //glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, 0);
 
-    // Draw normals if enabled
+    // Debug visualization
     if (_showNormals) {
         glDisable(GL_LIGHTING);
-        glDisable(GL_TEXTURE_2D);
-
         glBegin(GL_LINES);
-        glColor3f(0.0f, 1.0f, 0.0f); // Green for normals
+        glColor3f(0.0f, 1.0f, 0.0f);
 
         for (const auto& vertex : _vertices) {
             vec3 start = vertex.position;
-            // Fixed: Multiply vec3 by scalar using proper GLM syntax
             vec3 end = start + (vertex.normal * static_cast<double>(_normalLength));
 
-            glVertex3dv(glm::value_ptr(start));
-            glVertex3dv(glm::value_ptr(end));
+            glVertex3d(start.x, start.y, start.z);
+            glVertex3d(end.x, end.y, end.z);
         }
         glEnd();
-
-        // Restore state
-        if (prevLighting) glEnable(GL_LIGHTING);
-        if (prevTexture2D) glEnable(GL_TEXTURE_2D);
     }
 
     glBindVertexArray(0);
-    //glPopMatrix();
+
+    // Restore state
+    glPopMatrix();
+    glPopAttrib();
 
     std::cout << "Rendering mesh with " << _vertices.size() << " vertices and "
         << _indices.size() << " indices" << std::endl;
