@@ -106,56 +106,45 @@ struct Cube {
 //
 //    // Funci�n para cargar geometr�a desde un archivo FBX
 //    void Geometry(const std::string& filepath) {
-//        // Crear un importador Assimp
-//        Assimp::Importer importer;
-//        const aiScene* scene = importer.ReadFile(filepath,
-//            aiProcess_CalcTangentSpace |
-//            aiProcess_Triangulate |
-//            aiProcess_JoinIdenticalVertices |
-//            aiProcess_SortByPType);
-//        
-//        if (scene == nullptr) {
-//            std::cerr << "Error al cargar el archivo: " << importer.GetErrorString() << std::endl;
-//            
-//        }
-//        else {
-//            numM = scene->mNumMeshes;
-//			vertex_data.resize(numM);
-//			index_data.resize(numM);
-//            // Procesar las mallas
-//            for (unsigned int m = 0; m < numM; m++) {
-//                aiMesh* mesh = scene->mMeshes[m];
-//                std::cout << "Malla " << m << ": " << mesh->mName.C_Str() << std::endl;
-//                // Procesar los v�rtices
-//                for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-//
-//                    aiVector3D vertex = mesh->mVertices[i];
-//                    vec3 aux = vec3(vertex.x, vertex.y, vertex.z);
-//                    vertex_data[m].push_back(aux);
-//
-//                }
-//                // Procesar las caras (�ndices)
-//                for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-//                    aiFace face = mesh->mFaces[i];
-//                    for (unsigned int j = 0; j < face.mNumIndices; j++) {
-//                        index_data[m].push_back(face.mIndices[j]);
-//                    }
-//                }
-//
-//                
-//                glGenBuffers(1, &auxvBID);
-//                glBindBuffer(GL_ARRAY_BUFFER, auxvBID);
-//                glBufferData(GL_ARRAY_BUFFER, vertex_data[m].size() * sizeof(vec3), vertex_data[m].data(), GL_STATIC_DRAW);
-//
-//                glGenBuffers(1, &auxiBID);
-//                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, auxiBID);
-//                glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data[m].size() * sizeof(unsigned int), index_data[m].data(), GL_STATIC_DRAW);
-//               
-//                vBPosID.push_back(auxvBID);
-//                iBID.push_back(auxiBID);			    //buffer d'indexs
-//              					
-//
-//            }
+//         Assimp::Importer importer;
+            //const aiScene* scene = importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+            //if (!scene || !scene->mRootNode) {
+            //    cerr << "Error loading FBX file: " << importer.GetErrorString() << endl;
+            //    return;
+            //}
+
+            //numM = scene->mNumMeshes;  // Update number of meshes based on the scene
+            //vertex_data.resize(numM);
+            //index_data.resize(numM);
+
+            //cout << "FBX file loaded successfully: " << filepath << endl;
+            //cout << "Number of meshes: " << numM << endl;
+
+            //for (unsigned int i = 0; i < numM; i++) {
+            //    aiMesh* mesh = scene->mMeshes[i];
+
+            //    cout << "\nMesh " << i << ": " << endl;
+            //    cout << "Vertices: " << mesh->mNumVertices << endl;
+            //    cout << "Faces: " << mesh->mNumFaces << endl;
+
+            //    // Store vertex positions
+            //    for (unsigned int v = 0; v < mesh->mNumVertices; v++) {
+            //        aiVector3D vertex = mesh->mVertices[v];
+            //        vertex_data[i].emplace_back(vertex.x, vertex.y, vertex.z);
+
+            //        cout << "Vertex " << v << ": (" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")" << endl;
+            //    }
+
+            //    // Store indices for each face
+            //    for (unsigned int f = 0; f < mesh->mNumFaces; f++) {
+            //        aiFace face = mesh->mFaces[f];
+            //        for (unsigned int idx = 0; idx < face.mNumIndices; idx++) {
+            //            index_data[i].push_back(face.mIndices[idx]);
+            //            cout << "Index " << idx << ": " << face.mIndices[idx] << endl;
+            //        }
+            //    }
+            //} 
 //        }
 //
 //        
@@ -293,9 +282,42 @@ void raycastFromMouse(int mouseX, int mouseY) {
 
 void cameramovement(const SDL_Event& event) {
     
+    static bool isLeftMouseDown = false;
+    static int lastMouseX, lastMouseY;
    
     const Uint8* keystates = SDL_GetKeyboardState(nullptr);
     
+    // Free look-around movement
+    if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+        isLeftMouseDown = true;
+        lastMouseX = event.button.x;
+        lastMouseY = event.button.y;
+    }
+    else if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
+        isLeftMouseDown = false;
+    }
+
+    if (isLeftMouseDown && event.type == SDL_MOUSEMOTION) {
+        int mouseX = event.motion.x;
+        int mouseY = event.motion.y;
+
+        int deltaX = mouseX - lastMouseX;
+        int deltaY = mouseY - lastMouseY;
+
+        // Adjust sensitivity as needed
+        float sensitivity = 0.1f;
+        float yaw = deltaX * sensitivity;
+        float pitch = deltaY * sensitivity;
+
+        // Apply the rotation
+        camera.transform().rotate(glm::radians(-yaw), vec3(0, 1, 0));    // Yaw rotation around Y axis
+        camera.transform().rotate(glm::radians(-pitch), vec3(-1, 0, 0));  // Pitch rotation around X axis
+
+        // Update last mouse position
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
+    }
+
 	// Camera movement
 	if (keystates[SDL_SCANCODE_LSHIFT]) {
         if (keystates[SDL_SCANCODE_W]) {

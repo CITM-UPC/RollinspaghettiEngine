@@ -121,36 +121,57 @@ void ModelLoader::ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScen
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
 
+    // Print mesh info
+    std::cout << "Processing Mesh: " << mesh->mName.C_Str() << std::endl;
+    std::cout << "Number of Vertices: " << mesh->mNumVertices << std::endl;
+    std::cout << "Number of Faces: " << mesh->mNumFaces << std::endl;
+
     // Process vertices
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
 
         // Position
         vertex.position = AssimpToGlm(mesh->mVertices[i]);
+        std::cout << "Vertex " << i << " Position: "
+            << vertex.position.x << ", "
+            << vertex.position.y << ", "
+            << vertex.position.z << std::endl;
 
         // Normals
         if (mesh->HasNormals()) {
             vertex.normal = AssimpToGlm(mesh->mNormals[i]);
+            std::cout << "Vertex " << i << " Normal: "
+                << vertex.normal.x << ", "
+                << vertex.normal.y << ", "
+                << vertex.normal.z << std::endl;
         }
 
         // Texture coordinates
         if (mesh->mTextureCoords[0]) {
             vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
             vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
+            std::cout << "Vertex " << i << " Texture Coords: "
+                << vertex.texCoords.x << ", "
+                << vertex.texCoords.y << std::endl;
         }
         else {
             vertex.texCoords = vec2(0.0f, 0.0f);
+            std::cout << "Vertex " << i << " Texture Coords: 0.0, 0.0" << std::endl;
         }
 
         vertices.push_back(vertex);
     }
 
     // Process indices
+    std::cout << "Indices:" << std::endl;
     for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
         aiFace face = mesh->mFaces[i];
+        std::cout << "Face " << i << ": ";
         for (unsigned int j = 0; j < face.mNumIndices; j++) {
             indices.push_back(face.mIndices[j]);
+            std::cout << face.mIndices[j] << " ";
         }
+        std::cout << std::endl;
     }
 
     // Create mesh component
@@ -160,6 +181,7 @@ void ModelLoader::ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScen
     // Process material
     if (mesh->mMaterialIndex >= 0) {
         aiMaterial* material = scene_ai->mMaterials[mesh->mMaterialIndex];
+        std::cout << "Processing Material for Mesh: " << mesh->mName.C_Str() << std::endl;
         ProcessMaterial(gameObject, material);
     }
 
