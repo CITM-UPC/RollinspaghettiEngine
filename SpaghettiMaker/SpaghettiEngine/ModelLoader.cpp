@@ -38,6 +38,10 @@ GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path) {
     // Process the root node
     ProcessNode(scene, scene_ai->mRootNode, scene_ai, rootObject);
 
+    std::cout << "Loading model: " << path << std::endl;
+    std::cout << "Number of meshes: " << scene_ai->mNumMeshes << std::endl;
+    std::cout << "Number of materials: " << scene_ai->mNumMaterials << std::endl;
+
     return rootObject;
 }
 
@@ -158,6 +162,10 @@ void ModelLoader::ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScen
         aiMaterial* material = scene_ai->mMaterials[mesh->mMaterialIndex];
         ProcessMaterial(gameObject, material);
     }
+
+    std::cout << "Processing mesh with " << mesh->mNumVertices << " vertices and "
+        << mesh->mNumFaces << " faces" << std::endl;
+
 }
 
 void ModelLoader::ProcessMaterial(GameObject* gameObject, aiMaterial* material) {

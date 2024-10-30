@@ -4,6 +4,7 @@
 #include "TransformComponent.h"
 #include <GL/glew.h>
 #include "imgui.h"
+#include <iostream>
 
 MeshComponent::~MeshComponent() {
     CleanupMesh();
@@ -133,6 +134,9 @@ void MeshComponent::OnUpdate() {
 
     glBindVertexArray(0);
     //glPopMatrix();
+
+    std::cout << "Rendering mesh with " << _vertices.size() << " vertices and "
+        << _indices.size() << " indices" << std::endl;
 }
 
 void MeshComponent::OnInspectorGUI() {
