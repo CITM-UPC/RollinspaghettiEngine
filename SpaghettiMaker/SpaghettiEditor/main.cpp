@@ -280,12 +280,20 @@ void raycastFromMouse(int mouseX, int mouseY) {
 }
 
 
-void cameramovement(const SDL_Event& event) {
+void cameramovement(const SDL_Event& event, Scene* scene) {
     
     static bool isLeftMouseDown = false;
     static int lastMouseX, lastMouseY;
    
     const Uint8* keystates = SDL_GetKeyboardState(nullptr);
+
+    // Add debug toggle for F1 key
+    if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_F1) {
+        if (scene) {
+            scene->ToggleDebug();
+            std::cout << "Debug visualization toggled" << std::endl;
+        }
+    }
     
     // Free look-around movement
     if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
@@ -502,7 +510,7 @@ int main(int argc, char** argv) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             event_processor->processEvent(event);
-            cameramovement(event); // Llama a cameramovement pasando el evento
+            cameramovement(event, scene); // Llama a cameramovement pasando el evento
 
             switch (event.type) {
             case SDL_QUIT:
