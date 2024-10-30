@@ -31,10 +31,15 @@ void MeshComponent::SetupMesh() {
     vertexData.reserve(_vertices.size() * 8); // 3 for pos, 3 for normal, 2 for UV
 
     for (const auto& vertex : _vertices) {
+        // Rotate position by 90 degrees around the X and Y axes simultaneously
+        float rotatedX = vertex.position.y;    // New x after rotation
+        float rotatedY = -vertex.position.z;   // New y after rotation
+        float rotatedZ = -vertex.position.x;   // New z after rotation
+
         // Position
-        vertexData.push_back(static_cast<float>(vertex.position.x));
-        vertexData.push_back(static_cast<float>(vertex.position.y));
-        vertexData.push_back(static_cast<float>(vertex.position.z));
+        vertexData.push_back(rotatedX);
+        vertexData.push_back(rotatedY);
+        vertexData.push_back(rotatedZ);
 
         // Normal
         vertexData.push_back(static_cast<float>(vertex.normal.x));
