@@ -78,38 +78,15 @@ void ConsoleWindow::render() {
             _showEditorWindows = !_showEditorWindows; // Toggle visibility
         }
 
-		  // Put the next menu on the same line
-        // Quit Button
-        if (ImGui::Button("Quit")) {
-            _shouldQuit = true; // Set the quit flag
-        }
-
-        ImGui::EndMainMenuBar();
-    }
-
-    // Render editor windows only if they are visible
-    if (_showEditorWindows) {
-        ImGui::Begin("Editor");  // Open a new ImGui window with a custom title
-
-        // Add custom content to the window
-        ImGui::Text("Main Menu");  // Display some text
-
         // GitHub Link button
         if (ImGui::Button("GitHub Link")) {
             SDL_OpenURL("https://github.com/CITM-UPC/RollinspaghettiEngine");  // Replace with your actual URL
         }
-        ImGui::SameLine();
-        // About Us button
+
         if (ImGui::Button("About Us")) {
             ImGui::OpenPopup("AboutUsPopup");  // Open the About Us popup
         }
-        ImGui::SameLine();
-        // Config Window button
-        if (ImGui::Button("Config Window")) {
-            ImGui::OpenPopup("ConfigWindow");  // Open the Config Window popup
-        }
 
-        // Handle About Us popup
         if (ImGui::BeginPopupModal("AboutUsPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
             ImGui::Text("Rollinspaghetti Engine\nVersion 1.0\n\nA custom game engine developed by Yiwei Ye, Andrea Dona y Pablo Longaron");
             ImGui::Text("This engine is designed to show our learning in the programming area,");
@@ -120,51 +97,56 @@ void ConsoleWindow::render() {
             ImGui::EndPopup();
         }
 
+        // Config Window button
+        if (ImGui::Button("Config Window")) {
+            ImGui::OpenPopup("ConfigWindow");  // Open the Config Window popup
+        }
+
         // Handle Config Window popup
         if (ImGui::BeginPopupModal("ConfigWindow", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-            
-           
-                // Display the FPS graph in the popup
 
-                // FPS calculation
-                auto now = std::chrono::high_resolution_clock::now();
-                float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(now - lastFrameTime).count();
-                lastFrameTime = now;
 
-                // Calculate FPS and store in buffer
-                float fps = 1.0f / deltaTime;
-                if (fpsHistory.size() >= maxFPSHistorySize) {
-                    fpsHistory.erase(fpsHistory.begin());
-                }
-                fpsHistory.push_back(fps);
+            // Display the FPS graph in the popup
 
-                // Display current FPS
-                ImGui::Text("FPS: %.1f", fps);  // Display current FPS
-                ImGui::PlotLines("FPS History", fpsHistory.data(), fpsHistory.size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 100));
+            // FPS calculation
+            auto now = std::chrono::high_resolution_clock::now();
+            float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(now - lastFrameTime).count();
+            lastFrameTime = now;
 
-                // Display hardware and software information
-                ImGui::Text("Hardware and Software Information:");
+            // Calculate FPS and store in buffer
+            float fps = 1.0f / deltaTime;
+            if (fpsHistory.size() >= maxFPSHistorySize) {
+                fpsHistory.erase(fpsHistory.begin());
+            }
+            fpsHistory.push_back(fps);
 
-                // CPU and GPU information
-                ImGui::Text("CPU Cores: %d", SDL_GetCPUCount());
-                ImGui::Text("System RAM: %d MB", SDL_GetSystemRAM());
-                ImGui::Text("CPU Cache Line Size: %d bytes", SDL_GetCPUCacheLineSize());
+            // Display current FPS
+            ImGui::Text("FPS: %.1f", fps);  // Display current FPS
+            ImGui::PlotLines("FPS History", fpsHistory.data(), fpsHistory.size(), 0, NULL, 0.0f, 120.0f, ImVec2(0, 100));
 
-                // SDL Version
-                SDL_version compiled, linked;
-                SDL_VERSION(&compiled);
-                SDL_GetVersion(&linked);
-                ImGui::Text("SDL Version: %d.%d.%d (compiled), %d.%d.%d (linked)",
-                    compiled.major, compiled.minor, compiled.patch,
-                    linked.major, linked.minor, linked.patch);
+            // Display hardware and software information
+            ImGui::Text("Hardware and Software Information:");
 
-                // OpenGL Version
-                const GLubyte* glVersion = glGetString(GL_VERSION);
-                ImGui::Text("OpenGL Version: %s", glVersion);
+            // CPU and GPU information
+            ImGui::Text("CPU Cores: %d", SDL_GetCPUCount());
+            ImGui::Text("System RAM: %d MB", SDL_GetSystemRAM());
+            ImGui::Text("CPU Cache Line Size: %d bytes", SDL_GetCPUCacheLineSize());
 
-                // Memory consumption information
-                size_t memoryUsage = getMemoryUsage(); // Get memory usage
-                ImGui::Text("Memory Usage: %zu bytes (%.2f MB)", memoryUsage, memoryUsage / (1024.0f * 1024.0f));
+            // SDL Version
+            SDL_version compiled, linked;
+            SDL_VERSION(&compiled);
+            SDL_GetVersion(&linked);
+            ImGui::Text("SDL Version: %d.%d.%d (compiled), %d.%d.%d (linked)",
+                compiled.major, compiled.minor, compiled.patch,
+                linked.major, linked.minor, linked.patch);
+
+            // OpenGL Version
+            const GLubyte* glVersion = glGetString(GL_VERSION);
+            ImGui::Text("OpenGL Version: %s", glVersion);
+
+            // Memory consumption information
+            size_t memoryUsage = getMemoryUsage(); // Get memory usage
+            ImGui::Text("Memory Usage: %zu bytes (%.2f MB)", memoryUsage, memoryUsage / (1024.0f * 1024.0f));
 
 
 
@@ -176,6 +158,27 @@ void ConsoleWindow::render() {
             }
             ImGui::EndPopup();
         }
+
+        // Quit Button
+        if (ImGui::Button("Quit")) {
+            _shouldQuit = true; // Set the quit flag
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+
+    // Render editor windows only if they are visible
+    if (_showEditorWindows) {
+
+        // Set fixed position and size
+        ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Always);   // Set a fixed position (10, 10)
+        ImGui::SetNextWindowSize(ImVec2(300, 720), ImGuiCond_Always); // Set a fixed size (300x500)
+
+        ImGui::Begin("Editor");  // Open a new ImGui window with a custom title
+
+        // Add custom content to the window
+        ImGui::Text("Hierarchy");  // Display some text
+
 
         ImGui::End();  // End the ImGui window
     }
