@@ -282,9 +282,42 @@ void raycastFromMouse(int mouseX, int mouseY) {
 
 void cameramovement(const SDL_Event& event) {
     
+    static bool isLeftMouseDown = false;
+    static int lastMouseX, lastMouseY;
    
     const Uint8* keystates = SDL_GetKeyboardState(nullptr);
     
+    // Free look-around movement
+    if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+        isLeftMouseDown = true;
+        lastMouseX = event.button.x;
+        lastMouseY = event.button.y;
+    }
+    else if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
+        isLeftMouseDown = false;
+    }
+
+    if (isLeftMouseDown && event.type == SDL_MOUSEMOTION) {
+        int mouseX = event.motion.x;
+        int mouseY = event.motion.y;
+
+        int deltaX = mouseX - lastMouseX;
+        int deltaY = mouseY - lastMouseY;
+
+        // Adjust sensitivity as needed
+        float sensitivity = 0.1f;
+        float yaw = deltaX * sensitivity;
+        float pitch = deltaY * sensitivity;
+
+        // Apply the rotation
+        camera.transform().rotate(glm::radians(-yaw), vec3(0, 1, 0));    // Yaw rotation around Y axis
+        camera.transform().rotate(glm::radians(-pitch), vec3(-1, 0, 0));  // Pitch rotation around X axis
+
+        // Update last mouse position
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
+    }
+
 	// Camera movement
 	if (keystates[SDL_SCANCODE_LSHIFT]) {
         if (keystates[SDL_SCANCODE_W]) {
