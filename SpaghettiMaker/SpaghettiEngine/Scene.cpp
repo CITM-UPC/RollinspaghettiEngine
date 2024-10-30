@@ -1,6 +1,9 @@
 #include "Scene.h"
 #include "imgui.h"
+#include "ModelLoader.h"
 #include <algorithm>
+#include <iostream>
+#include <filesystem>
 
 Scene::Scene(const char* name) : _name(name) {
     // Create root GameObject
@@ -57,6 +60,25 @@ GameObject* Scene::CreateGameObject(const char* name, GameObject* parent) {
     _gameObjects.push_back(gameObject);
 
     return gameObject.get();
+}
+
+void Scene::HandleFileDrop(const char* path) {
+    std::filesystem::path fsPath(path);
+    std::string extension = fsPath.extension().string();
+
+    // Convert to lowercase for comparison
+    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+
+    if (extension == ".fbx") {
+        // Load the model
+        GameObject* loadedModel = ModelLoader::LoadModel(this, path);
+        if (loadedModel) {
+            std::cout << "Successfully loaded model: " << path << std::endl;
+        }
+        else {
+            std::cerr << "Failed to load model: " << path << std::endl;
+        }
+    }
 }
 
 void Scene::DestroyGameObject(GameObject* gameObject) {

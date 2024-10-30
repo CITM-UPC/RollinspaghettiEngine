@@ -363,8 +363,6 @@ void cameramovement(const SDL_Event& event) {
     }
 
 
-
-
 }
 
 int main(int argc, char** argv) {

@@ -37,7 +37,7 @@ public:
 		_left = glm::vec3(_mat[0]);  // Columna izquierda
 		_up = glm::vec3(_mat[1]);    // Columna superior
 		_fwd = glm::vec3(_mat[2]);   // Columna frontal
-		_pos = glm::vec3(_mat[3]);   // Columna de posición
+		_pos = glm::vec3(_mat[3]);   // Columna de posicion
 	}
 
 

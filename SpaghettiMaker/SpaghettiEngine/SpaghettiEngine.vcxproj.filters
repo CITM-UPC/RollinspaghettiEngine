@@ -96,6 +96,9 @@
     <ClInclude Include="RendererComponent.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="ModelLoader.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Transform.cpp">
@@ -151,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="PrimitiveGenerator.cpp">
       <Filter>Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoader.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

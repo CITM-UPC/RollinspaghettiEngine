@@ -28,6 +28,8 @@ public:
     void Stop();
     void Pause(bool pause);
 
+    void HandleFileDrop(const char* path);
+
     void Render() {
         // Save OpenGL state
         GLboolean lighting = glIsEnabled(GL_LIGHTING);
