@@ -62,6 +62,92 @@ GameObject* Scene::CreateGameObject(const char* name, GameObject* parent) {
     return gameObject.get();
 }
 
+void Scene::Render() {
+    if (!_root) return;
+
+    // Save current OpenGL state
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glPushMatrix();
+
+    // Set up basic OpenGL state for 3D rendering
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    // Set up a basic light
+    GLfloat lightPos[] = { 0.0f, 10.0f, 0.0f, 1.0f };
+    GLfloat lightAmb[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat lightDiff[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmb);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiff);
+
+    // Render all game objects
+    RenderGameObject(_root);
+
+    // Restore OpenGL state
+    glPopMatrix();
+    glPopAttrib();
+    
+    // Backup of old rendering code
+    
+    //// Save OpenGL state
+    //GLboolean lighting = glIsEnabled(GL_LIGHTING);
+    //GLboolean texture2D = glIsEnabled(GL_TEXTURE_2D);
+
+    //// Set up OpenGL state
+    //glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHT0);
+
+    //// Setup basic lighting
+    //GLfloat lightPos[] = { 0.0f, 10.0f, 0.0f, 1.0f };
+    //GLfloat lightAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    //GLfloat lightDiffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+
+    //glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+    //glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+    //glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+
+    //// Render all GameObjects
+    //for (const auto& gameObject : _gameObjects) {
+    //    if (auto renderer = gameObject->GetComponent<RendererComponent>()) {
+    //        renderer->OnUpdate();
+    //    }
+    //}
+
+    //// Restore OpenGL state
+    //if (!lighting) glDisable(GL_LIGHTING);
+    //if (!texture2D) glDisable(GL_TEXTURE_2D);
+}
+
+void Scene::RenderGameObject(GameObject* gameObject) {
+    if (!gameObject || !gameObject->IsActive()) return;
+
+    glPushMatrix();
+
+    // Apply transform if it exists
+    if (auto transform = gameObject->GetComponent<TransformComponent>()) {
+        glMultMatrixd(glm::value_ptr(transform->GetWorldMatrix()));
+    }
+
+    // Render mesh and material if they exist
+    auto mesh = gameObject->GetComponent<MeshComponent>();
+    auto material = gameObject->GetComponent<MaterialComponent>();
+
+    if (mesh) {
+        // The mesh component will handle its own rendering
+        mesh->OnUpdate(); // This will trigger the mesh rendering
+    }
+
+    // Render all children
+    for (const auto& child : gameObject->GetChildren()) {
+        RenderGameObject(child.get());
+    }
+
+    glPopMatrix();
+}
+
 void Scene::HandleFileDrop(const char* path) {
     std::filesystem::path fsPath(path);
     std::string extension = fsPath.extension().string();
