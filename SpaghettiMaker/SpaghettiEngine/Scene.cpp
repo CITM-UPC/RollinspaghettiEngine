@@ -208,7 +208,7 @@ void Scene::HandleFileDrop(const char* path) {
 
     if (extension == ".fbx") {
         // Load the model
-        GameObject* loadedModel = ModelLoader::LoadModel(this, path);
+        GameObject* loadedModel = ModelLoader::LoadModel(this,path,path);
         if (loadedModel) {
             std::cout << "Successfully loaded model: " << path << std::endl;
             // Auto-focus on the newly loaded model

@@ -9,12 +9,12 @@
 
 class ModelLoader {
 public:
-    static GameObject* LoadModel(Scene* scene, const std::string& path);
+    static GameObject* LoadModel(Scene* scene, const std::string& path, const std::string& path2);
 
 private:
-    static GameObject* ProcessNode(Scene* scene, aiNode* node, const aiScene* scene_ai, GameObject* parent = nullptr);
-    static void ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScene* scene_ai);
-    static void ProcessMaterial(GameObject* gameObject, aiMaterial* material);
+    static GameObject* ProcessNode(Scene* scene, aiNode* node, const aiScene* scene_ai, GameObject* parent = nullptr, const std::string& texturePath="");
+    static void ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScene* scene_ai, const std::string& texturePath = "");
+    static void ProcessMaterial(GameObject* gameObject, aiMaterial* material, const std::string& texturePath = "");
 
     // Conversion helpers
     static vec3 AssimpToGlm(const aiVector3D& v);

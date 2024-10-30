@@ -454,7 +454,9 @@ int main(int argc, char** argv) {
     if (scene) {
         // Load initial model (baker house)
         const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";  // Adjust path as needed
-        GameObject* model = ModelLoader::LoadModel(scene, modelPath);
+		const char* modeltexPath = "../SpaghettiEngine/Baker_house.png";  // Adjust path as needed
+
+        GameObject* model = ModelLoader::LoadModel(scene, modelPath, modeltexPath);
         if (model) {
             std::cout << "Successfully loaded baker house model" << std::endl;
 

@@ -8,7 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path) {
+GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path, const std::string& path2) {
     // Create Assimp importer
     Assimp::Importer importer;
 
@@ -44,7 +44,7 @@ GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path) {
     rootTransform->SetLocalScale(vec3(0.1));  // Scale down by default
 
     // Process the root node
-    ProcessNode(scene, scene_ai->mRootNode, scene_ai, rootObject);
+    ProcessNode(scene, scene_ai->mRootNode, scene_ai, rootObject, path2);
 
     std::cout << "Loading model: " << path << std::endl;
     std::cout << "Number of meshes: " << scene_ai->mNumMeshes << std::endl;
@@ -53,7 +53,7 @@ GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path) {
     return rootObject;
 }
 
-GameObject* ModelLoader::ProcessNode(Scene* scene, aiNode* node, const aiScene* scene_ai, GameObject* parent) {
+GameObject* ModelLoader::ProcessNode(Scene* scene, aiNode* node, const aiScene* scene_ai, GameObject* parent, const std::string& texturePath) {
     // Create game object for this node
     GameObject* gameObject = scene->CreateGameObject(node->mName.C_Str(), parent);
 
@@ -114,7 +114,7 @@ GameObject* ModelLoader::ProcessNode(Scene* scene, aiNode* node, const aiScene* 
     // Process all meshes for this node
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh* mesh = scene_ai->mMeshes[node->mMeshes[i]];
-        ProcessMesh(gameObject, mesh, scene_ai);
+        ProcessMesh(gameObject, mesh, scene_ai, texturePath);
     }
 
     // Process children
@@ -135,7 +135,7 @@ GameObject* ModelLoader::ProcessNode(Scene* scene, aiNode* node, const aiScene* 
     return gameObject;
 }
 
-void ModelLoader::ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScene* scene_ai) {
+void ModelLoader::ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScene* scene_ai, const std::string& texturePath) {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
 
@@ -179,7 +179,8 @@ void ModelLoader::ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScen
 
     // Process material
     if (mesh->mMaterialIndex >= 0) {
-        ProcessMaterial(gameObject, scene_ai->mMaterials[mesh->mMaterialIndex]);
+        std::string customTexturePath = texturePath; // Specify your custom texture path
+        ProcessMaterial(gameObject, scene_ai->mMaterials[mesh->mMaterialIndex], customTexturePath);
     }
 
     std::cout << "Processing mesh with " << mesh->mNumVertices << " vertices and "
@@ -187,7 +188,7 @@ void ModelLoader::ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScen
 
 }
 
-void ModelLoader::ProcessMaterial(GameObject* gameObject, aiMaterial* material) {
+void ModelLoader::ProcessMaterial(GameObject* gameObject, aiMaterial* material, const std::string& texturePath) {
     auto materialComp = gameObject->AddComponent<MaterialComponent>();
 
     // Load material properties
@@ -207,7 +208,10 @@ void ModelLoader::ProcessMaterial(GameObject* gameObject, aiMaterial* material) 
         materialComp->SetShininess(shininess / 128.0f); // Convert to 0-1 range
 
     // Load textures
-    if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+    if (!texturePath.empty()) {
+        materialComp->SetDiffuseTexture(texturePath);
+    }
+    else if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
         aiString path;
         if (material->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS) {
             // Get the directory of the FBX file
