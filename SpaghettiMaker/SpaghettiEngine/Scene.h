@@ -20,9 +20,13 @@ private:
     bool _isPlaying = false;
     bool _isPaused = false;
 
+    bool _showDebug = false;
+
 public:
     Scene(const char* name = "New Scene");
     ~Scene();
+
+    void ToggleDebug() { _showDebug = !_showDebug; }
 
     // Add camera setter
     void SetCamera(Camera* camera) { _camera = camera; }

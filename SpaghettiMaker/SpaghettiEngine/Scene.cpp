@@ -125,6 +125,11 @@ void Scene::Render() {
     //// Restore OpenGL state
     //if (!lighting) glDisable(GL_LIGHTING);
     //if (!texture2D) glDisable(GL_TEXTURE_2D);
+
+
+
+
+
 }
 
 void Scene::RenderGameObject(GameObject* gameObject) {
@@ -135,6 +140,32 @@ void Scene::RenderGameObject(GameObject* gameObject) {
     // Apply transform if it exists
     if (auto transform = gameObject->GetComponent<TransformComponent>()) {
         glMultMatrixd(glm::value_ptr(transform->GetWorldMatrix()));
+
+
+        // Debug visualization
+        if (_showDebug) {
+            // Draw transform axes
+            glDisable(GL_LIGHTING);
+            glBegin(GL_LINES);
+
+            // X axis (red)
+            glColor3f(1.0f, 0.0f, 0.0f);
+            glVertex3d(0, 0, 0);
+            glVertex3d(1, 0, 0);
+
+            // Y axis (green)
+            glColor3f(0.0f, 1.0f, 0.0f);
+            glVertex3d(0, 0, 0);
+            glVertex3d(0, 1, 0);
+
+            // Z axis (blue)
+            glColor3f(0.0f, 0.0f, 1.0f);
+            glVertex3d(0, 0, 0);
+            glVertex3d(0, 0, 1);
+
+            glEnd();
+            glEnable(GL_LIGHTING);
+        }
     }
 
     // Render mesh and material if they exist
@@ -304,6 +335,15 @@ void Scene::DrawHierarchyNode(GameObject* node) {
 
 void Scene::OnInspectorGUI() {
     ImGui::Begin("Inspector");
+
+    // Add debug toggle at the top of the Inspector
+    bool debugMode = _showDebug;
+    if (ImGui::Checkbox("Debug View (F1)", &debugMode)) {
+        _showDebug = debugMode;
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::SetTooltip("Shows transform axes and additional debug info");
+    }
 
     if (_selectedGameObject) {
         // GameObject name

@@ -122,6 +122,16 @@ GameObject* ModelLoader::ProcessNode(Scene* scene, aiNode* node, const aiScene* 
         ProcessNode(scene, node->mChildren[i], scene_ai, gameObject);
     }
 
+    // Debug output for transforms
+    std::cout << "Processing node: " << node->mName.C_Str() << std::endl;
+    std::cout << "Transform matrix:" << std::endl;
+    for (int i = 0; i < 4; i++) {
+        std::cout << glmMat[i][0] << ", " << glmMat[i][1] << ", "
+            << glmMat[i][2] << ", " << glmMat[i][3] << std::endl;
+    }
+    std::cout << "Position: " << translation.x << ", " << translation.y << ", " << translation.z << std::endl;
+    std::cout << "Scale: " << scale.x << ", " << scale.y << ", " << scale.z << std::endl;
+
     return gameObject;
 }
 
