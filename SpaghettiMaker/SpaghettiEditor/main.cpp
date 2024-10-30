@@ -443,23 +443,23 @@ int main(int argc, char** argv) {
 	//casa.transform.translate(vec3(0, 1, -1));
 
     // After scene creation and before the main loop
-    //if (scene) {
-    //    // Load initial model (baker house)
-    //    const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";  // Adjust path as needed
-    //    GameObject* model = ModelLoader::LoadModel(scene, modelPath);
-    //    if (model) {
-    //        std::cout << "Successfully loaded baker house model" << std::endl;
+    if (scene) {
+        // Load initial model (baker house)
+        const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";  // Adjust path as needed
+        GameObject* model = ModelLoader::LoadModel(scene, modelPath);
+        if (model) {
+            std::cout << "Successfully loaded baker house model" << std::endl;
 
-    //        // Optionally position the model
-    //        if (auto transform = model->GetComponent<TransformComponent>()) {
-    //            transform->SetLocalPosition(vec3(0, 0, 0));
-    //            transform->SetLocalScale(vec3(0.1, 0.1, 0.1));
-    //        }
-    //    }
-    //    else {
-    //        std::cerr << "Failed to load baker house model" << std::endl;
-    //    }
-    //}
+            // Optionally position the model
+            if (auto transform = model->GetComponent<TransformComponent>()) {
+                transform->SetLocalPosition(vec3(0, 0, 0));
+                transform->SetLocalScale(vec3(0.1, 0.1, 0.1));
+            }
+        }
+        else {
+            std::cerr << "Failed to load baker house model" << std::endl;
+        }
+    }
 
 
     

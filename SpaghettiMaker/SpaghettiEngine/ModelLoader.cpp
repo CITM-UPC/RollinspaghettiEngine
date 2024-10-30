@@ -155,26 +155,21 @@ void ModelLoader::ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScen
     }
 
     // Process indices
-    std::cout << "Indices:" << std::endl;
+    indices.reserve(mesh->mNumFaces * 3);
     for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-        aiFace face = mesh->mFaces[i];
-        std::cout << "Face " << i << ": ";
+        const aiFace& face = mesh->mFaces[i];
         for (unsigned int j = 0; j < face.mNumIndices; j++) {
             indices.push_back(face.mIndices[j]);
-            std::cout << face.mIndices[j] << " ";
         }
-        std::cout << std::endl;
     }
 
-    // Create mesh component
+    // Create and setup components
     auto meshComp = gameObject->AddComponent<MeshComponent>();
     meshComp->SetMeshData(vertices, indices);
 
     // Process material
     if (mesh->mMaterialIndex >= 0) {
-        aiMaterial* material = scene_ai->mMaterials[mesh->mMaterialIndex];
-        std::cout << "Processing Material for Mesh: " << mesh->mName.C_Str() << std::endl;
-        ProcessMaterial(gameObject, material);
+        ProcessMaterial(gameObject, scene_ai->mMaterials[mesh->mMaterialIndex]);
     }
 
     std::cout << "Processing mesh with " << mesh->mNumVertices << " vertices and "
