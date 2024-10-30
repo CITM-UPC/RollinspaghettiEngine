@@ -49,6 +49,10 @@ public:
     bool IsPaused() const { return _isPaused; }
     const std::string& GetName() const { return _name; }
 
+    // File handling
+    void HandleFileDrop(const char* path);
+
+
     // Editor GUI
     void OnHierarchyGUI();
     void OnInspectorGUI();
@@ -56,4 +60,5 @@ public:
 private:
     void DrawHierarchyNode(GameObject* node);
     void CleanupGameObject(GameObject* gameObject);
+    void RenderGameObject(GameObject* gameObject); // Private helper method for rendering
 };

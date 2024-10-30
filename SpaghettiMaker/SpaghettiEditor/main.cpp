@@ -460,11 +460,12 @@ int main(int argc, char** argv) {
         // Update and render scene
         if (scene) {
             scene->Update();
+            // Draw floor grid
+            drawFloorGrid(26, 1.0);
             scene->Render();
         }
 
-        // Draw floor grid
-        drawFloorGrid(26, 1.0);
+
 
         // Render UI
         console.render();
