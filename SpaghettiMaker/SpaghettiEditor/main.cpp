@@ -329,10 +329,10 @@ void cameramovement(const SDL_Event& event) {
 		camera.transform().rotate(glm::radians(1.0), vec3(1, 0, 0));
     }
     if (keystates[SDL_SCANCODE_LEFT]) {
-		camera.transform().rotate(glm::radians(-1.0), vec3(0, 1, 0));
+		camera.transform().rotate(glm::radians(1.0), vec3(0, 1, 0));
     }
 	if (keystates[SDL_SCANCODE_RIGHT]) {
-		camera.transform().rotate(glm::radians(1.0), vec3(0, 1, 0));
+		camera.transform().rotate(glm::radians(-1.0), vec3(0, 1, 0));
 	}
 
 	
