@@ -180,6 +180,10 @@ void Scene::HandleFileDrop(const char* path) {
         GameObject* loadedModel = ModelLoader::LoadModel(this, path);
         if (loadedModel) {
             std::cout << "Successfully loaded model: " << path << std::endl;
+            // Auto-focus on the newly loaded model
+            FocusOnGameObject(loadedModel);
+            // Set it as selected object
+            SetSelectedGameObject(loadedModel);
         }
         else {
             std::cerr << "Failed to load model: " << path << std::endl;
