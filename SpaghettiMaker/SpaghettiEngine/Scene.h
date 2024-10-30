@@ -30,7 +30,6 @@ public:
 
     void HandleFileDrop(const char* path);
     void Render();
-	void RenderGameObject(GameObject* gameObject);
 
     // GameObject management
     GameObject* CreateGameObject(const char* name = "GameObject", GameObject* parent = nullptr);
@@ -50,7 +49,7 @@ public:
     const std::string& GetName() const { return _name; }
 
     // File handling
-    void HandleFileDrop(const char* path);
+    //void HandleFileDrop(const char* path);
 
 
     // Editor GUI

@@ -77,13 +77,36 @@ void MeshComponent::OnUpdate() {
     GLboolean prevLighting = glIsEnabled(GL_LIGHTING);
     GLboolean prevTexture2D = glIsEnabled(GL_TEXTURE_2D);
 
-    // Apply transform
-    glPushMatrix();
-    glMultMatrixd(glm::value_ptr(transform->GetWorldMatrix()));
-
-    // Draw mesh
+    // Draw mesh using vertex buffer objects
     glBindVertexArray(_vao);
+
+    // Enable vertex arrays
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    // Set up vertex pointers
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glVertexPointer(3, GL_DOUBLE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+    glNormalPointer(GL_DOUBLE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+    glTexCoordPointer(2, GL_DOUBLE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+
+    // Draw elements
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, 0);
+
+    // Cleanup state
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    //// Apply transform
+    //glPushMatrix();
+    //glMultMatrixd(glm::value_ptr(transform->GetWorldMatrix()));
+
+    //// Draw mesh
+    //glBindVertexArray(_vao);
+    //glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, 0);
 
     // Draw normals if enabled
     if (_showNormals) {
@@ -109,7 +132,7 @@ void MeshComponent::OnUpdate() {
     }
 
     glBindVertexArray(0);
-    glPopMatrix();
+    //glPopMatrix();
 }
 
 void MeshComponent::OnInspectorGUI() {
