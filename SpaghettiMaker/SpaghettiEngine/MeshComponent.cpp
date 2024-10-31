@@ -113,6 +113,9 @@ void MeshComponent::OnUpdate() {
     //}
     glEnable(GL_LIGHTING);
 
+    // Enable texturing
+    glEnable(GL_TEXTURE_2D);
+
 
     // Draw mesh using vertex buffer objects
     glBindVertexArray(_vao);
