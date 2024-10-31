@@ -353,16 +353,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    //ilInit();
-    //error = ilGetError();
-    //if (error != IL_NO_ERROR) {
-    //    std::cerr << "DevIL initialization error: " << iluErrorString(error) << std::endl;
-    //    return -1;
-    //}
-
     // Configure DevIL settings
-    ilEnable(IL_ORIGIN_SET);
-    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
     ilEnable(IL_FILE_OVERWRITE);
 
     // Initialize the texture manager

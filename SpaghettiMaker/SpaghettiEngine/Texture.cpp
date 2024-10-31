@@ -43,9 +43,6 @@ bool Texture::LoadFromFile(const std::string& path) {
         return false;
     }
 
-    // Configure DevIL
-    ilEnable(IL_ORIGIN_SET);
-    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 
     // Read file into memory first
     std::ifstream file(fsPath, std::ios::binary);
