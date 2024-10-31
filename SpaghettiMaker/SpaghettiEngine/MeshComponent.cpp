@@ -98,7 +98,7 @@ void MeshComponent::OnUpdate() {
     auto transform = GetOwner()->GetComponent<TransformComponent>();
     if (!transform) return;
 
-    // Store current OpenGL state
+    // Store states
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     glPushMatrix();
 
@@ -106,54 +106,37 @@ void MeshComponent::OnUpdate() {
     const mat4& worldMatrix = transform->GetWorldMatrix();
     glMultMatrixd(glm::value_ptr(worldMatrix));
 
-    // Setup rendering state
-    glEnable(GL_DEPTH_TEST);
-    //if (!_wireframeMode) {
-    //    glEnable(GL_LIGHTING);
-    //}
-    glEnable(GL_LIGHTING);
-
-    // Enable texturing
+    // Enable necessary states
     glEnable(GL_TEXTURE_2D);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-
-    // Draw mesh using vertex buffer objects
+    // Bind VAO and draw
     glBindVertexArray(_vao);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, 0);
-
-
-    //// Apply transform
-    //glPushMatrix();
-    //glMultMatrixd(glm::value_ptr(transform->GetWorldMatrix()));
-
-    //// Draw mesh
-    //glBindVertexArray(_vao);
-    //glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, 0);
-
-     // Debug visualization
-    if (_showNormals) {
-        glDisable(GL_LIGHTING);
-        glBegin(GL_LINES);
-        glColor3f(0.0f, 1.0f, 0.0f);
-
-        for (const auto& vertex : _vertices) {
-            vec3 start = vertex.position;
-            vec3 end = start + (vertex.normal * static_cast<double>(_normalLength));
-
-            glVertex3d(start.x, start.y, start.z);
-            glVertex3d(end.x, end.y, end.z);
-        }
-        glEnd();
-    }
-
     glBindVertexArray(0);
 
-    // Restore state
+    // Cleanup states
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
     glPopMatrix();
     glPopAttrib();
 
-    /*std::cout << "Rendering mesh with " << _vertices.size() << " vertices and "
-        << _indices.size() << " indices" << std::endl;*/
+    // Debug output for first frame
+    static bool firstRender = true;
+    if (firstRender) {
+        std::cout << "First mesh render - Vertices: " << _vertices.size()
+            << " Indices: " << _indices.size() << std::endl;
+        // Debug first few UV coordinates
+        for (int i = 0; i < std::min(5, (int)_vertices.size()); i++) {
+            std::cout << "UV " << i << ": " << _vertices[i].texCoords.x
+                << ", " << _vertices[i].texCoords.y << std::endl;
+        }
+        firstRender = false;
+    }
 }
 
 void MeshComponent::OnInspectorGUI() {

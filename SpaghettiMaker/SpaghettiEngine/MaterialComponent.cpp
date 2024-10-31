@@ -19,25 +19,14 @@ void MaterialComponent::OnStart() {
 }
 
 void MaterialComponent::OnUpdate() {
-
-    // Add debug info for texture state
-    if (_diffuseMap) {
-        static bool logged = false;
-        if (!logged) {
-            std::cout << "Material Update - Active texture: " << _texturePath << std::endl;
-            std::cout << "Texture ID: " << _diffuseMap->GetID() << std::endl;
-            std::cout << "Using checker: " << (_useCheckerTexture ? "yes" : "no") << std::endl;
-            logged = true;
-        }
-    }
-    // Convert double vectors to float arrays for OpenGL
+    // Material properties
     float ambient[4] = { static_cast<float>(_ambient.x), static_cast<float>(_ambient.y),
                         static_cast<float>(_ambient.z), 1.0f };
     float diffuse[4] = { static_cast<float>(_diffuse.x), static_cast<float>(_diffuse.y),
                          static_cast<float>(_diffuse.z), 1.0f };
     float specular[4] = { static_cast<float>(_specular.x), static_cast<float>(_specular.y),
                           static_cast<float>(_specular.z), 1.0f };
-    float shininess = static_cast<float>(_shininess * 128.0); // Convert to OpenGL's 0-128 range
+    float shininess = static_cast<float>(_shininess * 128.0);
 
     // Set material properties
     glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
@@ -45,21 +34,26 @@ void MaterialComponent::OnUpdate() {
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
-    // Handle texturing
+    // Texture handling
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_COLOR_MATERIAL);  // Add this to ensure material colors work with textures
 
-    if (_useCheckerTexture && _diffuseMap) {
-        auto defaultTex = TEXTURE_MANAGER->GetDefaultTexture();
-        if (defaultTex) {
-            defaultTex->Bind(0);
+    // Save texture state
+    GLint previousTexture;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &previousTexture);
+
+    if (_diffuseMap) {
+        _diffuseMap->Bind(0);
+        // Debug output
+        static bool firstTime = true;
+        if (firstTime) {
+            std::cout << "Binding texture ID: " << _diffuseMap->GetID() << std::endl;
+            firstTime = false;
         }
     }
-    else if (_diffuseMap) {
-        _diffuseMap->Bind(0);
-    }
-    else {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
+
+    // After rendering, restore previous texture
+    glBindTexture(GL_TEXTURE_2D, previousTexture);
 }
 
 // Add the missing SetDiffuseTexture implementation

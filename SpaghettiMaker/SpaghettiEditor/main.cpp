@@ -122,6 +122,26 @@ static void init_openGL() {
     glMatrixMode(GL_MODELVIEW);
 }
 
+void init_devil() {
+    ilInit();
+    if (ilGetError() != IL_NO_ERROR) {
+        std::cerr << "DevIL initialization failed!" << std::endl;
+        return;
+    }
+
+    iluInit();
+    if (ilGetError() != IL_NO_ERROR) {
+        std::cerr << "ILU initialization failed!" << std::endl;
+        return;
+    }
+
+    // Set DevIL parameters
+    ilEnable(IL_ORIGIN_SET);
+    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+
+    std::cout << "DevIL initialized successfully" << std::endl;
+}
+
 static void drawFloorGrid(int size, double step) {
     glColor3ub(0, 0, 0);
     glBegin(GL_LINES);
@@ -324,7 +344,7 @@ int main(int argc, char** argv) {
 	scene->SetCamera(&camera);     // Set the camera for the scene
 
     init_openGL();
-
+    init_devil();
     // Initialize DevIL with error checking
     ILuint error;
     if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION) {
