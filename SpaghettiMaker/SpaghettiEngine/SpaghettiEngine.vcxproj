@@ -22,10 +22,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ConsoleWindow.h" />
-    <ClInclude Include="EditorLayer.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="HierarchyWindow.h" />
-    <ClInclude Include="InspectorWindow.h" />
     <ClInclude Include="MaterialComponent.h" />
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="ModelLoader.h" />
@@ -45,10 +42,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ConsoleWindow.cpp" />
-    <ClCompile Include="EditorLayer.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="HierarchyWindow.cpp" />
-    <ClCompile Include="InspectorWindow.cpp" />
     <ClCompile Include="MaterialComponent.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="ModelLoader.cpp" />

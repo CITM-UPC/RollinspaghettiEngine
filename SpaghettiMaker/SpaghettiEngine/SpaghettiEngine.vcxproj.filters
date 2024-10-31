@@ -48,9 +48,6 @@
     <ClInclude Include="types.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="EditorLayer.h">
-      <Filter>Editor</Filter>
-    </ClInclude>
     <ClInclude Include="ConsoleWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
@@ -109,9 +106,6 @@
     </ClCompile>
     <ClCompile Include="TransformComponent.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="EditorLayer.cpp">
-      <Filter>Editor</Filter>
     </ClCompile>
     <ClCompile Include="ConsoleWindow.cpp">
       <Filter>Editor\Windows</Filter>

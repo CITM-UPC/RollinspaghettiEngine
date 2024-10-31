@@ -49,6 +49,12 @@ size_t ConsoleWindow::getMemoryUsage() {
     return 0; // Return 0 if we can't get the memory usage
 }
 
+void ConsoleWindow::addLog(const std::string& message) {
+    logBuffer.push_back(message); // Add a new log entry to the buffer
+    if (logBuffer.size() > 100) { // Optional: limit the log buffer size
+        logBuffer.erase(logBuffer.begin());
+    }
+}
 // Render method
 void ConsoleWindow::render() {
     // Start new frames for OpenGL and SDL
@@ -150,12 +156,15 @@ void ConsoleWindow::render() {
         }
 
         if (ImGui::BeginPopupModal("ConsolePopup", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-            ImGui::Text("Examples:");
-            ImGui::Text("Processing Mesh");
-            ImGui::Text("Number of Vertices");
-            ImGui::Text("Number of Faces");
-            ImGui::Text("Loading model: ../SpaghettiEngine/BakerHouse.fbx");
-            ImGui::Text("Successfully loaded baker house model");
+
+            ImGui::Text("Console Log:");
+
+            ImGui::BeginChild("LogScrollingRegion", ImVec2(300, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
+            for (const auto& logEntry : logBuffer) {
+                ImGui::TextUnformatted(logEntry.c_str());
+            }
+            ImGui::EndChild();
+
             if (ImGui::Button("Close")) {
                 ImGui::CloseCurrentPopup();
             }

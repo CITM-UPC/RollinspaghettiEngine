@@ -7,6 +7,7 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include "ConsoleWindow.h"
 
 GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path, const std::string& texurepath) {
     // Create Assimp importer
@@ -47,6 +48,11 @@ GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path, const 
     ProcessNode(scene, scene_ai->mRootNode, scene_ai, rootObject, texurepath);
 
     std::cout << "Loading model: " << path << std::endl;
+
+	//How you should declare and use the ConsoleWindow class
+    //ConsoleWindow consoleWindow(nullptr, nullptr); // Replace with actual parameters
+    //consoleWindow.addLog("Loading model:");
+
     std::cout << "Number of meshes: " << scene_ai->mNumMeshes << std::endl;
     std::cout << "Number of materials: " << scene_ai->mNumMaterials << std::endl;
 

@@ -5,7 +5,6 @@
 #include <glm/glm.hpp>
 #include "IL/il.h"
 #include "IL/ilu.h"
-#include "spaghettiEngine/MyGUI.h"
 #include "SpaghettiEngine/Mywindow.h"
 #include "SpaghettiEngine/ConsoleWindow.h"
 #include "SpaghettiEngine/Transform.h"
