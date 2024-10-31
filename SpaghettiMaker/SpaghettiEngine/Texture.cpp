@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <filesystem>
+#include <fstream>
 
 
 
@@ -16,117 +17,6 @@ bool Texture::LoadFromFile(const std::string& path) {
     // Convert to absolute path and clean it up
     std::filesystem::path fsPath = std::filesystem::absolute(std::filesystem::path(path)).lexically_normal();
     
-    // Check file existence
-    if (!std::filesystem::exists(fsPath)) {
-        std::cerr << "File does not exist: " << fsPath << std::endl;
-        return false;
-    }
-
-    auto fileSize = std::filesystem::file_size(fsPath);
-    std::cout << "Found file at: " << fsPath << std::endl;
-    std::cout << "File size: " << fileSize << " bytes" << std::endl;
-
-    // Reset DevIL error state
-    ilGetError(); // Clear any previous errors
-
-    // Generate DevIL image ID
-    ILuint imageID = 0;
-    ilGenImages(1, &imageID);
-    if (ilGetError() != IL_NO_ERROR) {
-        std::cerr << "Failed to generate IL image" << std::endl;
-        return false;
-    }
-
-    ilBindImage(imageID);
-    if (ilGetError() != IL_NO_ERROR) {
-        std::cerr << "Failed to bind IL image" << std::endl;
-        return false;
-    }
-
-    // Configure DevIL
-    ilEnable(IL_ORIGIN_SET);
-    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-
-    // Read file into memory first
-    std::ifstream file(fsPath, std::ios::binary);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open file: " << fsPath << std::endl;
-        ilDeleteImages(1, &imageID);
-        return false;
-    }
-
-    // Get file size and read data
-    file.seekg(0, std::ios::end);
-    size_t size = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    std::vector<char> buffer(size);
-    file.read(buffer.data(), size);
-    file.close();
-
-    // Load from memory instead of file
-    if (!ilLoadL(IL_PNG, buffer.data(), static_cast<ILuint>(size))) {
-        ILenum error = ilGetError();
-        std::cerr << "DevIL failed to load image from memory. Error: " << error << std::endl;
-        ilDeleteImages(1, &imageID);
-        return false;
-    }
-
-    // Get image info
-    _width = ilGetInteger(IL_IMAGE_WIDTH);
-    _height = ilGetInteger(IL_IMAGE_HEIGHT);
-    _channels = ilGetInteger(IL_IMAGE_CHANNELS);
-
-    std::cout << "Image loaded: " << _width << "x" << _height << " channels: " << _channels << std::endl;
-
-    // Convert to RGBA format
-    if (!ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE)) {
-        std::cerr << "Failed to convert image format" << std::endl;
-        ilDeleteImages(1, &imageID);
-        return false;
-    }
-
-    // Create OpenGL texture
-    glGenTextures(1, &_textureID);
-    glBindTexture(GL_TEXTURE_2D, _textureID);
-
-    // Set texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // Get the image data
-    ILubyte* data = ilGetData();
-    if (!data) {
-        std::cerr << "Failed to get image data" << std::endl;
-        ilDeleteImages(1, &imageID);
-        return false;
-    }
-
-    // Upload to OpenGL
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    // Check for OpenGL errors
-    GLenum glError = glGetError();
-    if (glError != GL_NO_ERROR) {
-        std::cerr << "OpenGL error: " << glError << std::endl;
-    }
-
-    // Cleanup DevIL
-    ilDeleteImages(1, &imageID);
-
-    _isLoaded = true;
-    std::cout << "Texture loaded successfully. ID: " << _textureID << std::endl;
-    return true;
-}bool Texture::LoadFromFile(const std::string& path) {
-    Cleanup();
-    _path = path;
-
-    // Convert to absolute path and clean it up
-    std::filesystem::path fsPath = std::filesystem::absolute(std::filesystem::path(path)).lexically_normal();
-
     // Check file existence
     if (!std::filesystem::exists(fsPath)) {
         std::cerr << "File does not exist: " << fsPath << std::endl;

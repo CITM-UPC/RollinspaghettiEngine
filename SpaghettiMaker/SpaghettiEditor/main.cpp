@@ -352,12 +352,12 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    ilInit();
-    error = ilGetError();
-    if (error != IL_NO_ERROR) {
-        std::cerr << "DevIL initialization error: " << error << std::endl;
-        return -1;
-    }
+    //ilInit();
+    //error = ilGetError();
+    //if (error != IL_NO_ERROR) {
+    //    std::cerr << "DevIL initialization error: " << error << std::endl;
+    //    return -1;
+    //}
 
     // Configure DevIL settings
     ilEnable(IL_ORIGIN_SET);
