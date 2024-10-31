@@ -13,7 +13,8 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <iostream> 
+#include <iostream>
+#include <fstream>
 #include "spaghettiEngine/PrimitiveGenerator.h"
 #include "spaghettiEngine/GameObject.h"
 #include "spaghettiEngine/Scene.h"
@@ -402,7 +403,7 @@ int main(int argc, char** argv) {
     if (scene) {
         // Load initial model (baker house)
         const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";  // Adjust path as needed
-		const char* texturePath = "../SpaghettiEngine/BakerHouse.png";  // Adjust path as needed
+		const char* texturePath = "BakerHouse.png";  // Adjust path as needed
 
         GameObject* model = ModelLoader::LoadModel(scene, modelPath, texturePath);
         if (model) {
@@ -428,6 +429,16 @@ int main(int argc, char** argv) {
         }
         else {
             std::cerr << "Failed to load baker house model" << std::endl;
+        }
+
+        std::ifstream test("Baker_house.png", std::ios::binary);
+        if (test.good()) {
+            std::cout << "Can open PNG file directly" << std::endl;
+            test.seekg(0, std::ios::end);
+            std::cout << "PNG file size: " << test.tellg() << " bytes" << std::endl;
+        }
+        else {
+            std::cout << "Cannot open PNG file!" << std::endl;
         }
     }
 
