@@ -19,6 +19,17 @@ void MaterialComponent::OnStart() {
 }
 
 void MaterialComponent::OnUpdate() {
+
+    // Add debug info for texture state
+    if (_diffuseMap) {
+        static bool logged = false;
+        if (!logged) {
+            std::cout << "Material Update - Active texture: " << _texturePath << std::endl;
+            std::cout << "Texture ID: " << _diffuseMap->GetID() << std::endl;
+            std::cout << "Using checker: " << (_useCheckerTexture ? "yes" : "no") << std::endl;
+            logged = true;
+        }
+    }
     // Convert double vectors to float arrays for OpenGL
     float ambient[4] = { static_cast<float>(_ambient.x), static_cast<float>(_ambient.y),
                         static_cast<float>(_ambient.z), 1.0f };
@@ -37,7 +48,7 @@ void MaterialComponent::OnUpdate() {
     // Handle texturing
     glEnable(GL_TEXTURE_2D);
 
-    if (_useCheckerTexture) {
+    if (_useCheckerTexture && _diffuseMap) {
         auto defaultTex = TEXTURE_MANAGER->GetDefaultTexture();
         if (defaultTex) {
             defaultTex->Bind(0);
@@ -53,6 +64,8 @@ void MaterialComponent::OnUpdate() {
 
 // Add the missing SetDiffuseTexture implementation
 bool MaterialComponent::SetDiffuseTexture(const std::string& path) {
+    std::cout << "Attempting to set diffuse texture: " << path << std::endl;
+
     // Try to load the texture through the TextureManager
     auto newTexture = TEXTURE_MANAGER->LoadTexture(path);
     if (newTexture) {
@@ -61,14 +74,16 @@ bool MaterialComponent::SetDiffuseTexture(const std::string& path) {
         _useCheckerTexture = false; // Disable checker texture when setting a new texture
 
         // Log success
-        std::cout << "Successfully loaded texture: " << path << std::endl;
-        std::cout << "Texture size: " << newTexture->GetWidth() << "x" << newTexture->GetHeight() << std::endl;
+        std::cout << "Successfully set diffuse texture:" << std::endl;
+        std::cout << " - Path: " << path << std::endl;
+        std::cout << " - Size: " << newTexture->GetWidth() << "x" << newTexture->GetHeight() << std::endl;
+        std::cout << " - Texture ID: " << newTexture->GetID() << std::endl;
 
         return true;
     }
 
     // Log failure
-    std::cerr << "Failed to load texture: " << path << std::endl;
+    std::cerr << "Failed to load texture in MaterialComponent: " << path << std::endl;
     return false;
 }
 

@@ -233,7 +233,7 @@ void Scene::HandleFileDrop(const char* path) {
                 std::cout << "Successfully applied texture: " << path << std::endl;
             }
             else {
-                std::cerr << "Failed to load texture: " << path << std::endl;
+                std::cerr << "Failed to load texture in Scene.cpp: " << path << std::endl;
             }
         }
         else {

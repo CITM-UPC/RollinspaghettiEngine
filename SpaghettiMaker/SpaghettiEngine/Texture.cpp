@@ -21,7 +21,7 @@ bool Texture::LoadFromFile(const std::string& path) {
 
     // Load image
     if (!ilLoadImage(widePath.c_str())) {
-        std::cerr << "Failed to load texture: " << path << std::endl;
+        std::cerr << "Failed to load texture in Texture: " << path << std::endl;
         ilDeleteImages(1, &imageID);
         return false;
     }

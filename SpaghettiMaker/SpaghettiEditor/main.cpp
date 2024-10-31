@@ -371,13 +371,24 @@ int main(int argc, char** argv) {
         GameObject* model = ModelLoader::LoadModel(scene, modelPath, texturePath);
         if (model) {
             std::cout << "Successfully loaded baker house model" << std::endl;
-            scene->SetSelectedGameObject(model);  // Auto-select the loaded model
-            scene->FocusOnGameObject(model);      // Focus camera on it
+
+            // Verify material and texture
+            if (auto material = model->GetComponent<MaterialComponent>()) {
+                std::cout << "Material found on model" << std::endl;
+                if (material->GetDiffuseTexture()) {
+                    std::cout << "Texture loaded successfully" << std::endl;
+                }
+            }
+
+
             // Optionally position the model
             if (auto transform = model->GetComponent<TransformComponent>()) {
                 transform->SetLocalPosition(vec3(0, 0, 0));
                 transform->SetLocalScale(vec3(1, 1, 1));
             }
+
+            scene->SetSelectedGameObject(model);  // Auto-select the loaded model
+            scene->FocusOnGameObject(model);      // Focus camera on it
         }
         else {
             std::cerr << "Failed to load baker house model" << std::endl;

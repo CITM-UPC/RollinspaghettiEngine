@@ -1,6 +1,7 @@
 #include "TextureManager.h"
 #include "imgui.h"
 #include <filesystem>
+#include <iostream>
 
 TextureManager* TextureManager::s_instance = nullptr;
 
@@ -30,8 +31,9 @@ TexturePtr TextureManager::LoadTexture(const std::string& path) {
 
     // Load new texture
     auto texture = std::make_shared<Texture>();
-    if (texture->LoadFromFile("../SpaghettiEngine/Baker_house.png")) {
+    if (texture->LoadFromFile(normalizedPath)) {
         _textureCache[normalizedPath] = texture;
+        std::cout << "Successfully loaded and cached texture: " << normalizedPath << std::endl;
         return texture;
     }
 
