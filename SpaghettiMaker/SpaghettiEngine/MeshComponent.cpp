@@ -98,7 +98,7 @@ void MeshComponent::OnUpdate() {
     auto transform = GetOwner()->GetComponent<TransformComponent>();
     if (!transform) return;
 
-    // Store states
+    // Save states
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     glPushMatrix();
 
@@ -106,36 +106,44 @@ void MeshComponent::OnUpdate() {
     const mat4& worldMatrix = transform->GetWorldMatrix();
     glMultMatrixd(glm::value_ptr(worldMatrix));
 
-    // Enable necessary states
+    // Enable required states
     glEnable(GL_TEXTURE_2D);
+
+    // Use vertex arrays
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    // Bind VAO and draw
-    glBindVertexArray(_vao);
+    // Bind vertex data
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, position));
+    glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+
+    // Bind indices and draw
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
 
     // Cleanup states
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
     glPopMatrix();
     glPopAttrib();
 
-    // Debug output for first frame
-    static bool firstRender = true;
-    if (firstRender) {
-        std::cout << "First mesh render - Vertices: " << _vertices.size()
-            << " Indices: " << _indices.size() << std::endl;
-        // Debug first few UV coordinates
-        for (int i = 0; i < std::min(5, (int)_vertices.size()); i++) {
-            std::cout << "UV " << i << ": " << _vertices[i].texCoords.x
-                << ", " << _vertices[i].texCoords.y << std::endl;
-        }
-        firstRender = false;
+    static bool firstFrame = true;
+    if (firstFrame) {
+        std::cout << "Drawing mesh with:" << std::endl;
+        std::cout << "- Vertices: " << _vertices.size() << std::endl;
+        std::cout << "- Indices: " << _indices.size() << std::endl;
+        std::cout << "- VBO: " << _vbo << std::endl;
+        std::cout << "- EBO: " << _ebo << std::endl;
+        std::cout << "- VAO: " << _vao << std::endl;
+        firstFrame = false;
     }
 }
 

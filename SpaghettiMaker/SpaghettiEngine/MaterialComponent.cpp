@@ -54,6 +54,31 @@ void MaterialComponent::OnUpdate() {
 
     // After rendering, restore previous texture
     glBindTexture(GL_TEXTURE_2D, previousTexture);
+
+
+    // Handle texturing with debug info
+    static bool firstFrame = true;
+    if (_diffuseMap) {
+        glEnable(GL_TEXTURE_2D);
+        _diffuseMap->Bind(0);
+
+        if (firstFrame) {
+            std::cout << "Material using texture:" << std::endl;
+            std::cout << "- ID: " << _diffuseMap->GetID() << std::endl;
+            std::cout << "- Path: " << _texturePath << std::endl;
+            std::cout << "- Size: " << _diffuseMap->GetWidth() << "x" << _diffuseMap->GetHeight() << std::endl;
+            firstFrame = false;
+        }
+    }
+    else {
+        glDisable(GL_TEXTURE_2D);
+        if (firstFrame) {
+            std::cout << "Material has no texture" << std::endl;
+            firstFrame = false;
+        }
+    }
+
+
 }
 
 // Add the missing SetDiffuseTexture implementation

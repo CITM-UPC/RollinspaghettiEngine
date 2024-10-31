@@ -7,41 +7,54 @@
 #include <iostream>
 #include <filesystem>
 
+
+
 bool Texture::LoadFromFile(const std::string& path) {
     Cleanup();
     _path = path;
 
-    // Initialize DevIL if not done
-    static bool initialized = false;
-    if (!initialized) {
-        ilInit();
-        iluInit();
-        ilutInit();
-        initialized = true;
+    // Check file existence first
+    std::filesystem::path fsPath(path);
+    if (!std::filesystem::exists(fsPath)) {
+        std::cerr << "File does not exist: " << path << std::endl;
+        return false;
     }
+
+    // Print file size for debugging
+    auto fileSize = std::filesystem::file_size(fsPath);
+    std::cout << "Found file, size: " << fileSize << " bytes" << std::endl;
 
     // Generate DevIL image ID
     ILuint imageID = 0;
     ilGenImages(1, &imageID);
     ilBindImage(imageID);
 
-    // Convert to absolute path and then to wide string
-    std::filesystem::path fsPath = std::filesystem::absolute(path);
-    std::wstring widePath = fsPath.wstring();  // Convert to wide string for DevIL
+    // Set DevIL properties
+    ilEnable(IL_ORIGIN_SET);
+    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 
-    std::cout << "Trying to load texture from: " << fsPath.string() << std::endl;
+    // Try loading with various string formats
+    bool loaded = false;
+    std::wstring widePath = fsPath.wstring();
 
-    if (!ilLoadImage(widePath.c_str())) {  // Use wide string version
-        // Try relative path as fallback
-        std::filesystem::path relativePath(path);
-        std::wstring wideRelativePath = relativePath.wstring();
-        if (!ilLoadImage(wideRelativePath.c_str())) {
-            ILenum error = ilGetError();
-            std::cerr << "Failed to load image with DevIL. Error code: " << error << std::endl;
-            std::cerr << "Error message: " << error << std::endl;
-            ilDeleteImages(1, &imageID);
-            return false;
-        }
+    // Try loading with relative path first
+    if (ilLoadImage(path.c_str())) {
+        loaded = true;
+    }
+    // Try with absolute path
+    else if (ilLoadImage(fsPath.string().c_str())) {
+        loaded = true;
+    }
+    // Try with wide string path
+    else if (ilLoadImage(widePath.c_str())) {
+        loaded = true;
+    }
+
+    if (!loaded) {
+        ILenum error = ilGetError();
+        std::cerr << "All loading attempts failed. DevIL error: " << error << std::endl;
+        ilDeleteImages(1, &imageID);
+        return false;
     }
 
     // Get image info
@@ -49,39 +62,50 @@ bool Texture::LoadFromFile(const std::string& path) {
     _height = ilGetInteger(IL_IMAGE_HEIGHT);
     _channels = ilGetInteger(IL_IMAGE_CHANNELS);
 
-    std::cout << "Image loaded successfully. Size: " << _width << "x" << _height
-        << " Channels: " << _channels << std::endl;
+    // Print image info
+    std::cout << "Successfully loaded image:" << std::endl;
+    std::cout << "Dimensions: " << _width << "x" << _height << std::endl;
+    std::cout << "Channels: " << _channels << std::endl;
+    std::cout << "Format: " << ilGetInteger(IL_IMAGE_FORMAT) << std::endl;
+    std::cout << "Type: " << ilGetInteger(IL_IMAGE_TYPE) << std::endl;
 
-    // Convert to RGBA
-    ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+    // Convert to RGBA format
+    if (!ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE)) {
+        std::cerr << "Failed to convert image to RGBA" << std::endl;
+        ilDeleteImages(1, &imageID);
+        return false;
+    }
 
-    // Create OpenGL texture
+    // Create and setup OpenGL texture
     glGenTextures(1, &_textureID);
     glBindTexture(GL_TEXTURE_2D, _textureID);
 
-    // Set basic parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    // Set texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    // Upload the texture
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA,
-        GL_UNSIGNED_BYTE, ilGetData());
-
-    // Generate mipmaps
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    // Cleanup
-    ilDeleteImages(1, &imageID);
-
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR) {
-        std::cerr << "OpenGL error while creating texture: " << error << std::endl;
+    // Get the image data and upload to OpenGL
+    ILubyte* data = ilGetData();
+    if (!data) {
+        std::cerr << "Failed to get image data" << std::endl;
+        ilDeleteImages(1, &imageID);
         return false;
     }
 
-    std::cout << "Texture created successfully. ID: " << _textureID << std::endl;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+    // Check for OpenGL errors
+    GLenum glError = glGetError();
+    if (glError != GL_NO_ERROR) {
+        std::cerr << "OpenGL error: " << glError << std::endl;
+    }
+
+    // Cleanup DevIL
+    ilDeleteImages(1, &imageID);
+
+    std::cout << "Successfully created OpenGL texture with ID: " << _textureID << std::endl;
     _isLoaded = true;
     return true;
 }
