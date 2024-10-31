@@ -48,20 +48,8 @@
     <ClInclude Include="types.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="EditorLayer.h">
-      <Filter>Editor</Filter>
-    </ClInclude>
     <ClInclude Include="ConsoleWindow.h">
       <Filter>Editor\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="HierarchyWindow.h">
-      <Filter>Editor\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="InspectorWindow.h">
-      <Filter>Editor\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="MyGui.h">
-      <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Mywindow.h">
       <Filter>ImGui</Filter>
@@ -113,20 +101,8 @@
     <ClCompile Include="TransformComponent.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="EditorLayer.cpp">
-      <Filter>Editor</Filter>
-    </ClCompile>
     <ClCompile Include="ConsoleWindow.cpp">
       <Filter>Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="HierarchyWindow.cpp">
-      <Filter>Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="InspectorWindow.cpp">
-      <Filter>Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="MyGui.cpp">
-      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="MyWindow.cpp">
       <Filter>ImGui</Filter>
