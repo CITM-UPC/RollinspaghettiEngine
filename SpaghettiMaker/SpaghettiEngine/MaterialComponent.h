@@ -33,12 +33,10 @@ public:
     void SetSpecular(const vec3& color) { _specular = color; }
     void SetShininess(double value) { _shininess = value; }
 
-    // Updated texture management
+    // Texture management
     bool SetDiffuseTexture(const std::string& path);
     void SetUseCheckerTexture(bool use);
-    bool HasDiffuseTexture() const { return _diffuseMap != nullptr || _useCheckerTexture; }
-
-
+    bool HasDiffuseTexture() const { return _diffuseMap != nullptr; }
 
     // Property getters
     const vec3& GetAmbient() const { return _ambient; }
