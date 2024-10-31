@@ -393,8 +393,8 @@ int main(int argc, char** argv) {
     // After scene creation and before the main loop
     if (scene) {
         // Load initial model (baker house)
-        const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";  // Adjust path as needed
-		const char* texturePath = "../SpaghettiEditor/BakerHouse.png";  // Adjust path as needed
+        const char* modelPath = "Assets/BakerHouse.fbx";  // Adjust path as needed
+		const char* texturePath = "BakerHouse.png";  // Adjust path as needed
 
         GameObject* model = ModelLoader::LoadModel(scene, modelPath, texturePath);
         if (model) {
