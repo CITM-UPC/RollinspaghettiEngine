@@ -21,34 +21,32 @@ void TextureManager::Cleanup() {
 TexturePtr TextureManager::LoadTexture(const std::string& path) {
     // Normalize path
     std::filesystem::path fsPath(path);
-
-    try {
-        fsPath = std::filesystem::absolute(fsPath);
-    }
-    catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "Path error: " << e.what() << std::endl;
-        return _defaultTexture;
-    }
-
     std::string normalizedPath = fsPath.string();
-    std::cout << "Attempting to load texture from normalized path: " << normalizedPath << std::endl;
 
     // Check if texture is already loaded
     auto it = _textureCache.find(normalizedPath);
     if (it != _textureCache.end()) {
-        std::cout << "Found cached texture: " << normalizedPath << std::endl;
         return it->second;
     }
 
-    // Load new texture
+    // Check file extension
+    std::string ext = fsPath.extension().string();
+    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+    // Try loading the texture
     auto texture = std::make_shared<Texture>();
+
+    // If it's a PNG, ensure DevIL can handle PNG
+    if (ext == ".png") {
+        ilEnable(IL_PNG_ALPHA_INDEX);
+    }
+
     if (texture->LoadFromFile(normalizedPath)) {
         _textureCache[normalizedPath] = texture;
-        std::cout << "Successfully loaded and cached new texture: " << normalizedPath << std::endl;
         return texture;
     }
 
-    std::cerr << "Failed to load texture, falling back to default: " << normalizedPath << std::endl;
+    std::cerr << "Failed to load texture, using default: " << normalizedPath << std::endl;
     return _defaultTexture;
 }
 
