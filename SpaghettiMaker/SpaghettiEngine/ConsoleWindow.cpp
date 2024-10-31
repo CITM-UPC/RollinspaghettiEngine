@@ -205,7 +205,7 @@ void ConsoleWindow::render() {
         ImGui::SetNextWindowPos(ImVec2(980, 20), ImGuiCond_Always);   // Set a fixed position (10, 10)
         ImGui::SetNextWindowSize(ImVec2(300, 720), ImGuiCond_Always); // Set a fixed size (300x500)
 
-        ImGui::Begin("Inspector");  // Open a new ImGui window with a custom title
+        ImGui::Begin("Inspector  (Currently does not detect gameobjects)");  // Open a new ImGui window with a custom title
 
         // Add an expandable panel for "Transform"
         if (ImGui::CollapsingHeader("Transform")) {
@@ -213,6 +213,15 @@ void ConsoleWindow::render() {
             ImGui::Text("Position: (x, y, z)");  // Example position
             ImGui::Text("Rotation: (pitch, yaw, roll)");  // Example rotation
             ImGui::Text("Scale: (x, y, z)");  // Example scale
+
+            float position[3] = { 0.0f, 0.0f, 0.0f };
+            float rotation[3] = { 0.0f, 0.0f, 0.0f };
+            float scale[3] = { 0.0f, 0.0f, 0.0f };
+
+            // Sliders for position, rotation, and scale
+            ImGui::SliderFloat3("Position", position, -10.0f, 10.0f); // Add sliders for position
+            ImGui::SliderFloat3("Rotation", rotation, 0.0f, 360.0f); // Add sliders for rotation
+            ImGui::SliderFloat3("Scale", scale, 0.1f, 5.0f); // Add sliders for scale
         }
 
         // Add an expandable panel for "Mesh"
@@ -223,18 +232,32 @@ void ConsoleWindow::render() {
             
 
             ImGui::Text("Mesh Properties: ");
-            // You can add more mesh properties here, like dropdowns or other inputs
+            
+            ImGui::Checkbox("Use Wireframe", &useWireframe); // Example checkbox for wireframe mode
+
+            // Normals display options
+            ImGui::Checkbox("Display Per-Triangle Normals", &displayPerTriangleNormals);
+            ImGui::Checkbox("Display Per-Face Normals", &displayPerFaceNormals);
             
         }
 
         // Add an expandable panel for "Texture"
         if (ImGui::CollapsingHeader("Texture")) {
-            // Content inside the "Texture" panel
+			// Content inside the "Texture" panel
             ImGui::Text("Texture File: "); // Display texture file name
             ImGui::SameLine();
-       
 
-            ImGui::Text("Texture Properties: ");
+            // Declare textureFilePath variable
+            char textureFilePath[256] = "";
+
+            ImGui::InputText("##TextureFile", textureFilePath, sizeof(textureFilePath)); // Input field for texture file path
+
+            // Display texture size
+            ImGui::Text("Texture Size: %dx%d", textureWidth, textureHeight); // Display texture dimensions
+
+
+            // Option to view with checkerboard texture
+            ImGui::Checkbox("Show Checkerboard Texture", &showCheckerboardTexture); // Checkbox for checkerboard option
            
         }
 
