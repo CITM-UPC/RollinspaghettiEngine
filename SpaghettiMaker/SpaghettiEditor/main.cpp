@@ -22,7 +22,6 @@
 #include <assimp/DefaultLogger.hpp>  // Add this for logging functions
 #include <assimp/LogStream.hpp>      // Add this for logging functions
 #include <assimp/cimport.h>          // Add this for C-style functions like aiDetachAllLogStreams
-
 #include "spaghettiEngine/Transform.h"
 
 
