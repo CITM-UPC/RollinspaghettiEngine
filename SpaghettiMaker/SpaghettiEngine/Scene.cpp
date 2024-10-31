@@ -263,38 +263,6 @@ void Scene::DestroyGameObject(GameObject* gameObject) {
         _gameObjects.end());
 }
 
-void Scene::OnHierarchyGUI() {
-    ImGui::Begin("Hierarchy");
-
-    // Scene controls
-    if (ImGui::Button(_isPlaying ? "Stop" : "Play")) {
-        if (_isPlaying) Stop();
-        else Start();
-    }
-
-    ImGui::SameLine();
-
-    if (_isPlaying) {
-        if (ImGui::Button(_isPaused ? "Resume" : "Pause")) {
-            Pause(!_isPaused);
-        }
-    }
-
-    ImGui::Separator();
-
-    // Add GameObject button
-    if (ImGui::Button("Add GameObject")) {
-        CreateGameObject("New GameObject");
-    }
-
-    ImGui::Separator();
-
-    // Draw hierarchy tree starting from root
-    DrawHierarchyNode(_root);
-
-    ImGui::End();
-}
-
 void Scene::DrawHierarchyNode(GameObject* node) {
     if (!node) return;
 
@@ -328,6 +296,7 @@ void Scene::DrawHierarchyNode(GameObject* node) {
     // Handle selection
     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
         SetSelectedGameObject(node);
+        std::cout << "Selected GameObject: " << node->GetName() << std::endl;
     }
 
     // Context menu
@@ -353,44 +322,49 @@ void Scene::DrawHierarchyNode(GameObject* node) {
     }
 }
 
-void Scene::OnInspectorGUI() {
-    ImGui::Begin("Inspector");
+// Update OnHierarchyGUI to ensure the window is visible and properly sized:
+void Scene::OnHierarchyGUI() {
+    // Set window position and size
+    ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_FirstUseEver);
 
-    // Add debug toggle at the top of the Inspector
-    bool debugMode = _showDebug;
-    if (ImGui::Checkbox("Debug View (F1)", &debugMode)) {
-        _showDebug = debugMode;
-    }
-    if (ImGui::IsItemHovered()) {
-        ImGui::SetTooltip("Shows transform axes and additional debug info");
-    }
+    ImGui::Begin("Hierarchy", nullptr, ImGuiWindowFlags_NoCollapse);
 
+    // Add a header showing the currently selected object
     if (_selectedGameObject) {
-        // GameObject name
-        char nameBuf[256];
-        strncpy_s(nameBuf, _selectedGameObject->GetName().c_str(), sizeof(nameBuf) - 1);
-        if (ImGui::InputText("Name", nameBuf, sizeof(nameBuf))) {
-            // _selectedGameObject->SetName(nameBuf);  // You'll need to add this method to GameObject
-        }
-
-        ImGui::Separator();
-
-        // Display components
-        for (const auto& component : _selectedGameObject->GetComponents()) {
-            if (ImGui::CollapsingHeader(component->GetName().c_str())) {
-                component->OnInspectorGUI();
-            }
-        }
-
-        // Add Component button
-        if (ImGui::Button("Add Component")) {
-            // TODO: Show component selection popup
-            // This will be implemented when we add more component types
-        }
+        ImGui::Text("Selected: %s", _selectedGameObject->GetName().c_str());
     }
     else {
-        ImGui::Text("No GameObject selected");
+        ImGui::Text("No object selected");
     }
+
+    ImGui::Separator();
+
+    // Scene controls
+    if (ImGui::Button(_isPlaying ? "Stop" : "Play")) {
+        if (_isPlaying) Stop();
+        else Start();
+    }
+
+    ImGui::SameLine();
+
+    if (_isPlaying) {
+        if (ImGui::Button(_isPaused ? "Resume" : "Pause")) {
+            Pause(!_isPaused);
+        }
+    }
+
+    ImGui::Separator();
+
+    // Add GameObject button
+    if (ImGui::Button("Add GameObject")) {
+        CreateGameObject("New GameObject");
+    }
+
+    ImGui::Separator();
+
+    // Draw hierarchy tree starting from root
+    DrawHierarchyNode(_root);
 
     ImGui::End();
 }
