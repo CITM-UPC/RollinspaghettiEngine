@@ -83,7 +83,7 @@ bool MaterialComponent::SetDiffuseTexture(const std::string& path) {
     }
 
     // Log failure
-    std::cerr << "Failed to load texture in MaterialComponent: " << path << std::endl;
+    std::cerr << "Failed to load texture in MaterialComponent.cpp: " << path << std::endl;
     return false;
 }
 

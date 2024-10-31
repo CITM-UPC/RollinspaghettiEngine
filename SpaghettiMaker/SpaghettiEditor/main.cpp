@@ -324,9 +324,25 @@ int main(int argc, char** argv) {
 	scene->SetCamera(&camera);     // Set the camera for the scene
 
     init_openGL();
-    //DevIL initialization
+
+    // Initialize DevIL with error checking
+    ILuint error;
+    if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION) {
+        std::cerr << "Wrong DevIL version" << std::endl;
+        return -1;
+    }
+
     ilInit();
-    iluInit();
+    error = ilGetError();
+    if (error != IL_NO_ERROR) {
+        std::cerr << "DevIL initialization error: " << error << std::endl;
+        return -1;
+    }
+
+    // Configure DevIL settings
+    ilEnable(IL_ORIGIN_SET);
+    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+    ilEnable(IL_FILE_OVERWRITE);
 
     // Initialize the texture manager
     TEXTURE_MANAGER->Initialize();

@@ -21,11 +21,22 @@ void TextureManager::Cleanup() {
 TexturePtr TextureManager::LoadTexture(const std::string& path) {
     // Normalize path
     std::filesystem::path fsPath(path);
-    std::string normalizedPath = fsPath.lexically_normal().string();
+
+    try {
+        fsPath = std::filesystem::absolute(fsPath);
+    }
+    catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Path error: " << e.what() << std::endl;
+        return _defaultTexture;
+    }
+
+    std::string normalizedPath = fsPath.string();
+    std::cout << "Attempting to load texture from normalized path: " << normalizedPath << std::endl;
 
     // Check if texture is already loaded
     auto it = _textureCache.find(normalizedPath);
     if (it != _textureCache.end()) {
+        std::cout << "Found cached texture: " << normalizedPath << std::endl;
         return it->second;
     }
 
@@ -33,11 +44,11 @@ TexturePtr TextureManager::LoadTexture(const std::string& path) {
     auto texture = std::make_shared<Texture>();
     if (texture->LoadFromFile(normalizedPath)) {
         _textureCache[normalizedPath] = texture;
-        std::cout << "Successfully loaded and cached texture: " << normalizedPath << std::endl;
+        std::cout << "Successfully loaded and cached new texture: " << normalizedPath << std::endl;
         return texture;
     }
 
-    // Return default texture if loading failed
+    std::cerr << "Failed to load texture, falling back to default: " << normalizedPath << std::endl;
     return _defaultTexture;
 }
 
