@@ -149,8 +149,8 @@ void MeshComponent::OnUpdate() {
     glPopMatrix();
     glPopAttrib();
 
-    std::cout << "Rendering mesh with " << _vertices.size() << " vertices and "
-        << _indices.size() << " indices" << std::endl;
+    /*std::cout << "Rendering mesh with " << _vertices.size() << " vertices and "
+        << _indices.size() << " indices" << std::endl;*/
 }
 
 void MeshComponent::OnInspectorGUI() {

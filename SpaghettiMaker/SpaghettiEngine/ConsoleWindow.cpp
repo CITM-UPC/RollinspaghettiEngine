@@ -60,16 +60,6 @@ void ConsoleWindow::render() {
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("GameObjects")) {
             PrimitiveMenu::ShowPrimitiveMenu(_activeScene);
-            if (ImGui::Button("Create cube")) {
-                GameObject* cube = PrimitiveGenerator::CreateCube();
-                _activeScene->CreateGameObject(cube->GetName().c_str(), nullptr);  // Add to scene
-
-            }
-            if (ImGui::MenuItem("Create sphere"))
-            {
-                GameObject* cube = PrimitiveGenerator::CreateSphere();
-                _activeScene->CreateGameObject(cube->GetName().c_str(), nullptr);  // Add to scene
-            }
             ImGui::EndMenu();
         }
 
@@ -149,15 +139,29 @@ void ConsoleWindow::render() {
             ImGui::Text("Memory Usage: %zu bytes (%.2f MB)", memoryUsage, memoryUsage / (1024.0f * 1024.0f));
 
 
-
-
-
-
             if (ImGui::Button("Close")) {
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
         }
+
+        if (ImGui::Button("Console")) {
+            ImGui::OpenPopup("ConsolePopup");  
+        }
+
+        if (ImGui::BeginPopupModal("ConsolePopup", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::Text("Examples:");
+            ImGui::Text("Processing Mesh");
+            ImGui::Text("Number of Vertices");
+            ImGui::Text("Number of Faces");
+            ImGui::Text("Loading model: ../SpaghettiEngine/BakerHouse.fbx");
+            ImGui::Text("Successfully loaded baker house model");
+            if (ImGui::Button("Close")) {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+
 
         // Quit Button
         if (ImGui::Button("Quit")) {
@@ -179,6 +183,9 @@ void ConsoleWindow::render() {
         // Add custom content to the window
         ImGui::Text("Hierarchy");  // Display some text
 
+        ImGui::Text("GameObject1");
+        ImGui::Text("GameObject2");
+        ImGui::Text("GameObject3");
 
         ImGui::End();  // End the ImGui window
     }

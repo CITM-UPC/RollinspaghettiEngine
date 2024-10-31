@@ -91,92 +91,6 @@ struct Cube {
     }
 };
 
-//struct Casa {
-//    Transform transform;
-//    glm::u8vec3 color;
-//
-//    vector<vector<vec3>> vertex_data;
-//    vector<vector<unsigned int>> index_data;
-//
-//    vector<unsigned int> vBPosID, iBID;
-//
-//    unsigned int auxvBID;
-//    unsigned int auxiBID;
-//    unsigned int numM = 0;
-//
-//    // Funci�n para cargar geometr�a desde un archivo FBX
-//    void Geometry(const std::string& filepath) {
-//         Assimp::Importer importer;
-            //const aiScene* scene = importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs);
-
-            //if (!scene || !scene->mRootNode) {
-            //    cerr << "Error loading FBX file: " << importer.GetErrorString() << endl;
-            //    return;
-            //}
-
-            //numM = scene->mNumMeshes;  // Update number of meshes based on the scene
-            //vertex_data.resize(numM);
-            //index_data.resize(numM);
-
-            //cout << "FBX file loaded successfully: " << filepath << endl;
-            //cout << "Number of meshes: " << numM << endl;
-
-            //for (unsigned int i = 0; i < numM; i++) {
-            //    aiMesh* mesh = scene->mMeshes[i];
-
-            //    cout << "\nMesh " << i << ": " << endl;
-            //    cout << "Vertices: " << mesh->mNumVertices << endl;
-            //    cout << "Faces: " << mesh->mNumFaces << endl;
-
-            //    // Store vertex positions
-            //    for (unsigned int v = 0; v < mesh->mNumVertices; v++) {
-            //        aiVector3D vertex = mesh->mVertices[v];
-            //        vertex_data[i].emplace_back(vertex.x, vertex.y, vertex.z);
-
-            //        cout << "Vertex " << v << ": (" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")" << endl;
-            //    }
-
-            //    // Store indices for each face
-            //    for (unsigned int f = 0; f < mesh->mNumFaces; f++) {
-            //        aiFace face = mesh->mFaces[f];
-            //        for (unsigned int idx = 0; idx < face.mNumIndices; idx++) {
-            //            index_data[i].push_back(face.mIndices[idx]);
-            //            cout << "Index " << idx << ": " << face.mIndices[idx] << endl;
-            //        }
-            //    }
-            //} 
-//        }
-//
-//        
-//    }
-//
-//    void Init() {
-//        glGenBuffers(1, &auxvBID);
-//        glBindBuffer(GL_ARRAY_BUFFER, auxvBID);
-//        glBufferData(GL_ARRAY_BUFFER, vertex_data.size() * sizeof(vec3), vertex_data.data(), GL_STATIC_DRAW);
-//
-//        glGenBuffers(1, &auxiBID);
-//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, auxiBID);
-//        glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_data.size() * sizeof(unsigned int), index_data.data(), GL_STATIC_DRAW);
-//    }
-//
-//    void draw() const {
-//        for (int i = 0; i < numM; i++) {
-//
-//            glPushMatrix();
-//            glMultMatrixd(&transform.mat()[0][0]);
-//            glColor3ub(color.r, color.g, color.b);
-//            glEnableClientState(GL_VERTEX_ARRAY);
-//            glBindBuffer(GL_ARRAY_BUFFER, vBPosID[i]);
-//            glVertexPointer(3, GL_FLOAT, 0, 0); // Aseg�rate de usar GL_FLOAT aqu� si vec3 usa float
-//            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iBID[i]);
-//            glDrawElements(GL_TRIANGLES, index_data.size(), GL_UNSIGNED_INT, 0);
-//            glDisableClientState(GL_VERTEX_ARRAY);
-//            glPopMatrix();
-//        }
-//    }
-//};
-
 
 static void init_openGL() {
     glewInit();
@@ -296,12 +210,12 @@ void cameramovement(const SDL_Event& event, Scene* scene) {
     }
     
     // Free look-around movement
-    if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+    if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
         isLeftMouseDown = true;
         lastMouseX = event.button.x;
         lastMouseY = event.button.y;
     }
-    else if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
+    else if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_RIGHT) {
         isLeftMouseDown = false;
     }
 
@@ -389,7 +303,7 @@ void cameramovement(const SDL_Event& event, Scene* scene) {
 
     //Right Click
 
-    if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
+    if (keystates[SDL_SCANCODE_1]) {
         int mouseX = event.button.x;
         int mouseY = event.button.y;
 
