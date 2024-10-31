@@ -28,8 +28,7 @@ bool Texture::LoadFromFile(const std::string& path) {
     std::cout << "File size: " << fileSize << " bytes" << std::endl;
 
     // Reset DevIL error state
-    ilGetError(); // Clear any previous errors
-
+	while (ilGetError() != IL_NO_ERROR) {}
     // Generate DevIL image ID
     ILuint imageID = 0;
     ilGenImages(1, &imageID);

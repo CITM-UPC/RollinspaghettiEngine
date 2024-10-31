@@ -128,7 +128,7 @@ void init_devil() {
     ilInit();
     ILenum error = ilGetError();
     if (error != IL_NO_ERROR) {
-        std::cerr << "DevIL initialization failed: " << error << std::endl;
+        std::cerr << "DevIL initialization failed: " << iluErrorString(error) << std::endl;
         return;
     }
 
@@ -356,7 +356,7 @@ int main(int argc, char** argv) {
     //ilInit();
     //error = ilGetError();
     //if (error != IL_NO_ERROR) {
-    //    std::cerr << "DevIL initialization error: " << error << std::endl;
+    //    std::cerr << "DevIL initialization error: " << iluErrorString(error) << std::endl;
     //    return -1;
     //}
 
@@ -409,7 +409,7 @@ int main(int argc, char** argv) {
         if (model) {
             std::cout << "Successfully loaded baker house model" << std::endl;
 
-            // Verify material and texture
+            // Verify material and textureg
             if (auto material = model->GetComponent<MaterialComponent>()) {
                 std::cout << "Material found on model" << std::endl;
                 if (material->GetDiffuseTexture()) {
