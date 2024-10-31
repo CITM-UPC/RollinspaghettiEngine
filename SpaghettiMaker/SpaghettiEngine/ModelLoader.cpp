@@ -126,7 +126,7 @@ GameObject* ModelLoader::ProcessNode(Scene* scene, aiNode* node, const aiScene* 
 
     // Process children
     for (unsigned int i = 0; i < node->mNumChildren; i++) {
-        ProcessNode(scene, node->mChildren[i], scene_ai, gameObject);
+        ProcessNode(scene, node->mChildren[i], scene_ai, gameObject, texturePath);
     }
 
     // Debug output for transforms
@@ -214,16 +214,31 @@ void ModelLoader::ProcessMaterial(GameObject* gameObject, aiMaterial* material, 
     if (material->Get(AI_MATKEY_SHININESS, shininess) == AI_SUCCESS)
         materialComp->SetShininess(shininess / 128.0f); // Convert to 0-1 range
 
-    // Load textures
+    // Add debug logging
+    std::cout << "Processing material for: " << gameObject->GetName() << std::endl;
+    std::cout << "Custom texture path: " << texturePath << std::endl;
+
+    // Try loading texture
     if (!texturePath.empty()) {
-        materialComp->SetDiffuseTexture(texturePath);
+        if (materialComp->SetDiffuseTexture(texturePath)) {
+            std::cout << "Successfully applied custom texture: " << texturePath << std::endl;
+        }
+        else {
+            std::cerr << "Failed to apply custom texture: " << texturePath << std::endl;
+        }
     }
-    else if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
-        aiString path;
-        if (material->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS) {
-            // Get the directory of the FBX file
-            std::filesystem::path texPath = std::filesystem::path(path.C_Str());
-            materialComp->SetDiffuseTexture(texPath.string());
+    else {
+        // Try to load embedded texture
+        if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+            aiString path;
+            if (material->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS) {
+                std::string texPath = path.C_Str();
+                std::cout << "Found embedded texture path: " << texPath << std::endl;
+                materialComp->SetDiffuseTexture(texPath);
+            }
+        }
+        else {
+            std::cout << "No texture found for material, using default" << std::endl;
         }
     }
 }
