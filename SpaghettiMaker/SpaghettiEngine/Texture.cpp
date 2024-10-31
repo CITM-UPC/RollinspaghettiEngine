@@ -1,7 +1,7 @@
 #include "Texture.h"
 #include <GL/glew.h>
-#include "IL/il.h"
-#include "IL/ilu.h"
+#include <IL/il.h>
+#include <IL/ilu.h>
 #include <vector>
 #include <iostream>
 #include <filesystem>

@@ -2,6 +2,8 @@
 #include <string>
 #include <GL/glew.h>
 #include <memory>
+#include <IL/il.h>
+#include <IL/ilu.h>
 
 class Texture {
 private:

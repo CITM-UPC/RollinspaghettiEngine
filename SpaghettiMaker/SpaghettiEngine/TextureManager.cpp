@@ -30,7 +30,7 @@ TexturePtr TextureManager::LoadTexture(const std::string& path) {
 
     // Load new texture
     auto texture = std::make_shared<Texture>();
-    if (texture->LoadFromFile(normalizedPath)) {
+    if (texture->LoadFromFile("../SpaghettiEngine/Baker_house.png")) {
         _textureCache[normalizedPath] = texture;
         return texture;
     }
