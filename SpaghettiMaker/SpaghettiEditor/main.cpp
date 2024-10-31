@@ -123,23 +123,23 @@ static void init_openGL() {
 }
 
 void init_devil() {
+    // Initialize DevIL with error checking
     ilInit();
-    if (ilGetError() != IL_NO_ERROR) {
-        std::cerr << "DevIL initialization failed!" << std::endl;
+    ILenum error = ilGetError();
+    if (error != IL_NO_ERROR) {
+        std::cerr << "DevIL initialization failed: " << error << std::endl;
         return;
     }
 
-    iluInit();
-    if (ilGetError() != IL_NO_ERROR) {
-        std::cerr << "ILU initialization failed!" << std::endl;
-        return;
-    }
-
-    // Set DevIL parameters
+    // Set DevIL options
     ilEnable(IL_ORIGIN_SET);
     ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 
+    // Try to enable PNG loading specifically
+    ilEnable(IL_PNG_ALPHA_INDEX);
+
     std::cout << "DevIL initialized successfully" << std::endl;
+    std::cout << "DevIL version: " << ilGetInteger(IL_VERSION_NUM) << std::endl;
 }
 
 static void drawFloorGrid(int size, double step) {
@@ -402,7 +402,7 @@ int main(int argc, char** argv) {
     if (scene) {
         // Load initial model (baker house)
         const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";  // Adjust path as needed
-		const char* texturePath = "../SpaghettiEngine/Baker_house.png";  // Adjust path as needed
+		const char* texturePath = "../SpaghettiEngine/BakerHouse.png";  // Adjust path as needed
 
         GameObject* model = ModelLoader::LoadModel(scene, modelPath, texturePath);
         if (model) {
