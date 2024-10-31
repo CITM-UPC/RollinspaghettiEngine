@@ -119,14 +119,48 @@ void MeshComponent::OnUpdate() {
     const mat4& worldMatrix = transform->GetWorldMatrix();
     glMultMatrixd(glm::value_ptr(worldMatrix));
 
-    // Enable states
-    glEnable(GL_DEPTH_TEST);
+    // Enable necessary states
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_LIGHTING);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // Reset color to prevent tinting
 
-    // Draw using VAO
-    glBindVertexArray(_vao);
+    // Use vertex arrays for better performance
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    // Bind vertex data
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+
+    // Set vertex pointers with correct stride and offsets
+    size_t stride = 8 * sizeof(float); // 3 pos + 3 normal + 2 uv = 8 floats
+    glVertexPointer(3, GL_FLOAT, stride, (void*)0);
+    glNormalPointer(GL_FLOAT, stride, (void*)(3 * sizeof(float)));
+    glTexCoordPointer(2, GL_FLOAT, stride, (void*)(6 * sizeof(float)));
+
+    // Draw
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+
+    // Debug texture coordinates
+    static bool firstTime = true;
+    if (firstTime) {
+        std::cout << "Mesh texture coordinates:" << std::endl;
+        for (int i = 0; i < std::min(5, (int)_vertices.size()); i++) {
+            std::cout << "Vertex " << i << " UV: " << _vertices[i].texCoords.x
+                << ", " << _vertices[i].texCoords.y << std::endl;
+        }
+        firstTime = false;
+    }
+
+    // Cleanup state
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 
     // Draw normals if enabled
     if (_showNormals) {
