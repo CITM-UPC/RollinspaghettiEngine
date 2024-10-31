@@ -51,12 +51,6 @@
     <ClInclude Include="ConsoleWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="HierarchyWindow.h">
-      <Filter>Editor\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="InspectorWindow.h">
-      <Filter>Editor\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="Mywindow.h">
       <Filter>ImGui</Filter>
     </ClInclude>
@@ -108,12 +102,6 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="ConsoleWindow.cpp">
-      <Filter>Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="HierarchyWindow.cpp">
-      <Filter>Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="InspectorWindow.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
     <ClCompile Include="MyWindow.cpp">
