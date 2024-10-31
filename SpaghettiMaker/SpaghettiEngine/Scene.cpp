@@ -220,6 +220,26 @@ void Scene::HandleFileDrop(const char* path) {
             std::cerr << "Failed to load model: " << path << std::endl;
         }
     }
+    // For texture frop
+    else if (extension == ".png" || extension == ".dds") {
+        // Handle texture drop - apply to selected object
+        if (_selectedGameObject) {
+            auto material = _selectedGameObject->GetComponent<MaterialComponent>();
+            if (!material) {
+                material = _selectedGameObject->AddComponent<MaterialComponent>();
+            }
+
+            if (material->SetDiffuseTexture(path)) {
+                std::cout << "Successfully applied texture: " << path << std::endl;
+            }
+            else {
+                std::cerr << "Failed to load texture: " << path << std::endl;
+            }
+        }
+        else {
+            std::cout << "No object selected to apply texture to." << std::endl;
+        }
+    }
 }
 
 void Scene::DestroyGameObject(GameObject* gameObject) {

@@ -23,9 +23,9 @@ public:
     }
 
     // Component interface
-    //void OnStart() override;
-    //void OnUpdate() override;
-    //void OnInspectorGUI() override;
+    void OnStart() override;
+    void OnUpdate() override;
+    void OnInspectorGUI() override;
 
     // Material property setters
     void SetAmbient(const vec3& color) { _ambient = color; }
@@ -34,23 +34,11 @@ public:
     void SetShininess(double value) { _shininess = value; }
 
     // Updated texture management
-    bool SetDiffuseTexture(const std::string& path) {
-        _diffuseMap = TEXTURE_MANAGER->LoadTexture(path);
-        if (_diffuseMap) {
-            _texturePath = path;
-            _useCheckerTexture = false;
-            return true;
-        }
-        return false;
-    }
+    bool SetDiffuseTexture(const std::string& path);
+    void SetUseCheckerTexture(bool use);
+    bool HasDiffuseTexture() const { return _diffuseMap != nullptr || _useCheckerTexture; }
 
-    void SetUseCheckerTexture(bool use) {
-        _useCheckerTexture = use;
-        if (use) {
-            _diffuseMap = TEXTURE_MANAGER->GetDefaultTexture();
-            _texturePath.clear();
-        }
-    }
+
 
     // Property getters
     const vec3& GetAmbient() const { return _ambient; }
@@ -59,4 +47,5 @@ public:
     double GetShininess() const { return _shininess; }
     TexturePtr GetDiffuseTexture() const { return _diffuseMap; }
     bool IsUsingCheckerTexture() const { return _useCheckerTexture; }
+    const std::string& GetTexturePath() const { return _texturePath; }
 };
