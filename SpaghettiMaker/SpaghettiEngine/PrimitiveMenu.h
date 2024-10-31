@@ -19,16 +19,16 @@ public:
                 activeScene->CreateGameObject(sphere->GetName().c_str(), sphere);
             }
             if (ImGui::MenuItem("Cylinder")) {
-               /* GameObject* cylinder = PrimitiveGenerator::CreateCylinder();
-                activeScene->CreateGameObject(cylinder->GetName().c_str(), cylinder);*/
+                GameObject* cylinder = PrimitiveGenerator::CreateCylinder();
+                activeScene->CreateGameObject(cylinder->GetName().c_str(), cylinder);
             }
             if (ImGui::MenuItem("Plane")) {
-                /*GameObject* plane = PrimitiveGenerator::CreatePlane();
-                activeScene->CreateGameObject(plane->GetName().c_str(), plane);*/
+                GameObject* plane = PrimitiveGenerator::CreatePlane();
+                activeScene->CreateGameObject(plane->GetName().c_str(), plane);
             }
             if (ImGui::MenuItem("Cone")) {
-               /* GameObject* cone = PrimitiveGenerator::CreateCone();
-                activeScene->CreateGameObject(cone->GetName().c_str(), cone);*/
+                GameObject* cone = PrimitiveGenerator::CreateCone();
+                activeScene->CreateGameObject(cone->GetName().c_str(), cone);
             }
             if (ImGui::MenuItem("Torus")) {
                 /* GameObject* torus = PrimitiveGenerator::CreateTorus();

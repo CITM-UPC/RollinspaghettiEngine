@@ -14,6 +14,7 @@
 #include <windows.h>  // Include Windows API header for memory info
 #include <psapi.h> 
 #endif
+#include "GameObject.h"
 
 // Constructor
 ConsoleWindow::ConsoleWindow(SDL_Window* window, void* context) {
@@ -185,16 +186,29 @@ void ConsoleWindow::render() {
 
         // Set fixed position and size
         ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Always);   // Set a fixed position (10, 10)
-        ImGui::SetNextWindowSize(ImVec2(300, 720), ImGuiCond_Always); // Set a fixed size (300x500)
+        ImGui::SetNextWindowSize(ImVec2(150, 720), ImGuiCond_Always); // Set a fixed size (300x500)
 
         ImGui::Begin("Editor");  // Open a new ImGui window with a custom title
 
         // Add custom content to the window
         ImGui::Text("Hierarchy");  // Display some text
 
-        ImGui::Text("GameObject1");
-        ImGui::Text("GameObject2");
-        ImGui::Text("GameObject3");
+        ImGui::Separator(); // Add a separator line
+
+        for (const auto& gameObject : _activeScene->GetGameObjects()) {
+            // Display the name of each GameObject
+            ImGui::TreeNode("%s", gameObject->GetName().c_str());
+
+            /* Optionally, display child objects in a nested manner*/
+
+            //for (const auto& child : gameObject->GetChildren()) {
+            //    ImGui::Indent();  // Indent to visually represent hierarchy
+            //    ImGui::Text("- %s", child->GetName().c_str());
+            //    ImGui::Unindent();
+            //}
+
+
+        }
 
         ImGui::End();  // End the ImGui window
     }
@@ -224,6 +238,8 @@ void ConsoleWindow::render() {
             ImGui::SliderFloat3("Scale", scale, 0.1f, 5.0f); // Add sliders for scale
         }
 
+        ImGui::Separator(); // Add a separator line
+
         // Add an expandable panel for "Mesh"
         if (ImGui::CollapsingHeader("Mesh")) {
             // Content inside the "Mesh" panel
@@ -240,6 +256,8 @@ void ConsoleWindow::render() {
             ImGui::Checkbox("Display Per-Face Normals", &displayPerFaceNormals);
             
         }
+
+        ImGui::Separator(); // Add a separator line
 
         // Add an expandable panel for "Texture"
         if (ImGui::CollapsingHeader("Texture")) {

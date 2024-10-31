@@ -171,7 +171,7 @@ void ModelLoader::ProcessMesh(GameObject* gameObject, aiMesh* mesh, const aiScen
 
         if (mesh->mTextureCoords[0]) {
             vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
-            vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
+            vertex.texCoords.y = 1.0f - mesh->mTextureCoords[0][i].y;
         }
 
         vertices.push_back(vertex);
