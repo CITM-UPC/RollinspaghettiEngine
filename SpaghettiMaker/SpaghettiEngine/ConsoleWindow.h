@@ -4,6 +4,7 @@
 #include <vector>
 #include <chrono>
 #include "Scene.h"
+#include <string>
 
 class ConsoleWindow : public IEventProcessor
 {
@@ -18,14 +19,14 @@ public:
 	void processEvent(const SDL_Event& event) override;
 	// Declaración del método getMemoryUsage
 	size_t getMemoryUsage();
-
+	void addLog(const std::string& message); // Method to add log messages
 	// Add Scene management
 	void SetActiveScene(Scene* scene) { _activeScene = scene; }
 	Scene* GetActiveScene() const { return _activeScene; }
 private:
 	Scene* _activeScene = nullptr;  // Add this member
 	bool _showEditorWindows = true;
-	
+	std::vector<std::string> logBuffer; // Log buffer for storing console messages
 	float sliderValue = 0.5f;  // Initial value for the slider
 	bool checkboxValue = false;  // Initial value for the checkbox
 	bool buttonPressed = false;  // Track if button was pressed
