@@ -28,30 +28,49 @@ void MaterialComponent::OnUpdate() {
                           static_cast<float>(_specular.z), 1.0f };
     float shininess = static_cast<float>(_shininess * 128.0);
 
+    // Set material properties
     glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
-    // Texture handling
-    static GLint lastTexture = 0;
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTexture);
-
+    // Enable texturing
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_COLOR_MATERIAL);
 
     if (_diffuseMap) {
+        // Save current texture binding
+        GLint previousTexture;
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &previousTexture);
+
+        // Setup texture environment
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        // Activate texture unit and bind texture
         glActiveTexture(GL_TEXTURE0);
         _diffuseMap->Bind(0);
 
         static bool firstTime = true;
         if (firstTime) {
-            std::cout << "Material using texture ID: " << _diffuseMap->GetID() << std::endl;
+            std::cout << "Material Debug Info:" << std::endl;
+            std::cout << "- Texture ID: " << _diffuseMap->GetID() << std::endl;
+            std::cout << "- Size: " << _diffuseMap->GetWidth() << "x" << _diffuseMap->GetHeight() << std::endl;
+            std::cout << "- Path: " << _texturePath << std::endl;
+
+            // Verify texture parameters
+            GLint param;
+            glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, &param);
+            std::cout << "- Min Filter: " << param << std::endl;
+            glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, &param);
+            std::cout << "- Mag Filter: " << param << std::endl;
+            glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &param);
+            std::cout << "- Wrap S: " << param << std::endl;
+            glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, &param);
+            std::cout << "- Wrap T: " << param << std::endl;
+
             firstTime = false;
         }
     }
-
-    // After mesh is rendered, restore previous texture
-    glBindTexture(GL_TEXTURE_2D, lastTexture);
 }
 
 // Add the missing SetDiffuseTexture implementation
