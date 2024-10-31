@@ -199,6 +199,48 @@ void ConsoleWindow::render() {
         ImGui::End();  // End the ImGui window
     }
 
+    if (_showEditorWindows) {
+
+        // Set fixed position and size
+        ImGui::SetNextWindowPos(ImVec2(980, 20), ImGuiCond_Always);   // Set a fixed position (10, 10)
+        ImGui::SetNextWindowSize(ImVec2(300, 720), ImGuiCond_Always); // Set a fixed size (300x500)
+
+        ImGui::Begin("Inspector");  // Open a new ImGui window with a custom title
+
+        // Add an expandable panel for "Transform"
+        if (ImGui::CollapsingHeader("Transform")) {
+            // Content inside the "Transform" panel
+            ImGui::Text("Position: (x, y, z)");  // Example position
+            ImGui::Text("Rotation: (pitch, yaw, roll)");  // Example rotation
+            ImGui::Text("Scale: (x, y, z)");  // Example scale
+        }
+
+        // Add an expandable panel for "Mesh"
+        if (ImGui::CollapsingHeader("Mesh")) {
+            // Content inside the "Mesh" panel
+            ImGui::Text("Mesh File: "); // Display mesh file name
+            ImGui::SameLine();
+            
+
+            ImGui::Text("Mesh Properties: ");
+            // You can add more mesh properties here, like dropdowns or other inputs
+            
+        }
+
+        // Add an expandable panel for "Texture"
+        if (ImGui::CollapsingHeader("Texture")) {
+            // Content inside the "Texture" panel
+            ImGui::Text("Texture File: "); // Display texture file name
+            ImGui::SameLine();
+       
+
+            ImGui::Text("Texture Properties: ");
+           
+        }
+
+
+        ImGui::End();  // End the ImGui window
+    }
     // Render the ImGui frame
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
