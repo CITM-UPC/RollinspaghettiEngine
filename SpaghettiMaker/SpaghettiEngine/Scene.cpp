@@ -175,6 +175,12 @@ void Scene::RenderGameObject(GameObject* gameObject) {
     if (mesh) {
         // The mesh component will handle its own rendering
         mesh->OnUpdate(); // This will trigger the mesh rendering
+
+    }
+    if (material)
+    {
+        material->OnUpdate();
+		material->SetActive(true);
     }
 
     // Render all children
