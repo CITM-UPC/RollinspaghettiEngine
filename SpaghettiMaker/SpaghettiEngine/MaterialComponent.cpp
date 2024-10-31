@@ -28,57 +28,30 @@ void MaterialComponent::OnUpdate() {
                           static_cast<float>(_specular.z), 1.0f };
     float shininess = static_cast<float>(_shininess * 128.0);
 
-    // Set material properties
     glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
     glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 
     // Texture handling
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_COLOR_MATERIAL);  // Add this to ensure material colors work with textures
+    static GLint lastTexture = 0;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTexture);
 
-    // Save texture state
-    GLint previousTexture;
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &previousTexture);
+    glEnable(GL_TEXTURE_2D);
 
     if (_diffuseMap) {
+        glActiveTexture(GL_TEXTURE0);
         _diffuseMap->Bind(0);
-        // Debug output
+
         static bool firstTime = true;
         if (firstTime) {
-            std::cout << "Binding texture ID: " << _diffuseMap->GetID() << std::endl;
+            std::cout << "Material using texture ID: " << _diffuseMap->GetID() << std::endl;
             firstTime = false;
         }
     }
 
-    // After rendering, restore previous texture
-    glBindTexture(GL_TEXTURE_2D, previousTexture);
-
-
-    // Handle texturing with debug info
-    static bool firstFrame = true;
-    if (_diffuseMap) {
-        glEnable(GL_TEXTURE_2D);
-        _diffuseMap->Bind(0);
-
-        if (firstFrame) {
-            std::cout << "Material using texture:" << std::endl;
-            std::cout << "- ID: " << _diffuseMap->GetID() << std::endl;
-            std::cout << "- Path: " << _texturePath << std::endl;
-            std::cout << "- Size: " << _diffuseMap->GetWidth() << "x" << _diffuseMap->GetHeight() << std::endl;
-            firstFrame = false;
-        }
-    }
-    else {
-        glDisable(GL_TEXTURE_2D);
-        if (firstFrame) {
-            std::cout << "Material has no texture" << std::endl;
-            firstFrame = false;
-        }
-    }
-
-
+    // After mesh is rendered, restore previous texture
+    glBindTexture(GL_TEXTURE_2D, lastTexture);
 }
 
 // Add the missing SetDiffuseTexture implementation

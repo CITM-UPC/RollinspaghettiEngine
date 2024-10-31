@@ -9,7 +9,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include "ConsoleWindow.h"
 
-GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path, const std::string& texurepath) 
+GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path, const std::string& texturePath)
 {
     // Create Assimp importer
     Assimp::Importer importer;
@@ -45,15 +45,34 @@ GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path, const 
     // Set a default scale that works well with most models
     rootTransform->SetLocalScale(vec3(0.1));  // Scale down by default
 
+    // Handle texture path
+    std::string finalTexturePath;
+    if (!texturePath.empty()) {
+        // If explicit texture path provided, make it absolute
+        std::filesystem::path texPath(texturePath);
+        if (texPath.is_relative()) {
+            // If relative, make it relative to model path
+            std::filesystem::path modelDir = std::filesystem::absolute(std::filesystem::path(path)).parent_path();
+            texPath = modelDir / texPath;
+        }
+        finalTexturePath = texPath.string();
+    }
+    else {
+        // Try to find texture in same directory as model
+        std::filesystem::path modelDir = std::filesystem::absolute(std::filesystem::path(path)).parent_path();
+        std::filesystem::path defaultTexPath = modelDir / "Baker_house.png";
+        if (std::filesystem::exists(defaultTexPath)) {
+            finalTexturePath = defaultTexPath.string();
+        }
+    }
+
+    std::cout << "Model path: " << std::filesystem::absolute(path) << std::endl;
+    std::cout << "Texture path: " << finalTexturePath << std::endl;
+
     // Process the root node
-    ProcessNode(scene, scene_ai->mRootNode, scene_ai, rootObject, texurepath);
+    ProcessNode(scene, scene_ai->mRootNode, scene_ai, rootObject, finalTexturePath);
 
     std::cout << "Loading model: " << path << std::endl;
-
-	//How you should declare and use the ConsoleWindow class
-    //ConsoleWindow consoleWindow(nullptr, nullptr); // Replace with actual parameters
-    //consoleWindow.addLog("Loading model:");
-
     std::cout << "Number of meshes: " << scene_ai->mNumMeshes << std::endl;
     std::cout << "Number of materials: " << scene_ai->mNumMaterials << std::endl;
 
@@ -82,7 +101,6 @@ GameObject* ModelLoader::ProcessNode(Scene* scene, aiNode* node, const aiScene* 
     vec3 skew;
     vec4 perspective;
 
-
     // Use explicit types for decompose
     bool success = glm::decompose(
         glmMat,
@@ -92,31 +110,19 @@ GameObject* ModelLoader::ProcessNode(Scene* scene, aiNode* node, const aiScene* 
         skew,
         perspective
     );
+
+    // Set transform values
     if (success) {
-        // Set transform values
         transform->SetLocalPosition(translation);
         transform->SetLocalRotation(rotation);
         transform->SetLocalScale(scale);
     }
     else {
         std::cerr << "Failed to decompose transformation matrix for node: " << node->mName.C_Str() << std::endl;
-        // Set default transform values
         transform->SetLocalPosition(vec3(0.0));
         transform->SetLocalRotation(glm::dquat(1.0, 0.0, 0.0, 0.0));
         transform->SetLocalScale(vec3(1.0));
     }
-
-    if (!success) {
-        // Set default transform values
-        transform->SetLocalPosition(vec3(0.0));
-        transform->SetLocalRotation(glm::dquat(1.0, 0.0, 0.0, 0.0));
-        transform->SetLocalScale(vec3(1.0));
-    }
-
-    // Set transform values
-    transform->SetLocalPosition(translation);
-    transform->SetLocalRotation(rotation);
-    transform->SetLocalScale(scale);
 
     // Process all meshes for this node
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
