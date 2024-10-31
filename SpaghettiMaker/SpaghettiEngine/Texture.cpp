@@ -33,26 +33,29 @@ bool Texture::LoadFromFile(const std::string& path) {
     ilEnable(IL_ORIGIN_SET);
     ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 
-    // Try loading with various string formats
-    bool loaded = false;
+    // Convert paths to wide strings
     std::wstring widePath = fsPath.wstring();
+    std::wstring wideRelativePath = std::filesystem::path(path).wstring();
 
-    // Try loading with relative path first
-    if (ilLoadImage(path.c_str())) {
+    // Try loading with different paths
+    bool loaded = false;
+
+    // Try with wide string paths
+    if (ilLoadImage(widePath.c_str())) {
         loaded = true;
+        std::cout << "Loaded with absolute wide path" << std::endl;
     }
-    // Try with absolute path
-    else if (ilLoadImage(fsPath.string().c_str())) {
+    else if (ilLoadImage(wideRelativePath.c_str())) {
         loaded = true;
-    }
-    // Try with wide string path
-    else if (ilLoadImage(widePath.c_str())) {
-        loaded = true;
+        std::cout << "Loaded with relative wide path" << std::endl;
     }
 
     if (!loaded) {
         ILenum error = ilGetError();
         std::cerr << "All loading attempts failed. DevIL error: " << error << std::endl;
+        std::cerr << "Tried paths:" << std::endl;
+        std::wcerr << L"Wide absolute: " << widePath << std::endl;
+        std::wcerr << L"Wide relative: " << wideRelativePath << std::endl;
         ilDeleteImages(1, &imageID);
         return false;
     }
