@@ -335,7 +335,7 @@ void cameramovement(const SDL_Event& event, Scene* scene) {
 
 int main(int argc, char** argv) {
 
-    MyWindow window("ImGUI with SDL2 Simple Example", WINDOW_SIZE.x, WINDOW_SIZE.y);
+    MyWindow window("NYUNITY", WINDOW_SIZE.x, WINDOW_SIZE.y);
     //MyGUI gui(window.windowPtr(), window.contextPtr());
     ConsoleWindow console(window.windowPtr(), window.contextPtr());
 
