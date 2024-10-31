@@ -36,5 +36,12 @@ private:
 	// Variables for FPS calculation and history storage
 	std::chrono::high_resolution_clock::time_point lastFrameTime;  // Last frame time
 	std::vector<float> fpsHistory;  // Stores recent FPS values for the graph
+
+	bool useWireframe= false;
+	bool displayPerTriangleNormals = false;
+	bool displayPerFaceNormals = false;
+	bool showCheckerboardTexture = false;
+	int textureWidth = 1024;
+	int textureHeight = 1024;
 };
 
