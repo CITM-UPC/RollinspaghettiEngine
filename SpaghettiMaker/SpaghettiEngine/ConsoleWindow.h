@@ -16,7 +16,7 @@ public:
 	void render();
 	bool _shouldQuit = false;
 	void processEvent(const SDL_Event& event) override;
-	// Declaración del método getMemoryUsage
+	// Declaracion del metodo getMemoryUsage
 	size_t getMemoryUsage();
 
 	// Add Scene management

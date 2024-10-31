@@ -9,7 +9,8 @@
 
 class ModelLoader {
 public:
-    static GameObject* LoadModel(Scene* scene, const std::string& path, const std::string& path2);
+    // Add overloaded function that takes texture path
+    static GameObject* LoadModel(Scene* scene, const std::string& path, const std::string& texturePath = "");
 
 private:
     static GameObject* ProcessNode(Scene* scene, aiNode* node, const aiScene* scene_ai, GameObject* parent = nullptr, const std::string& texturePath="");

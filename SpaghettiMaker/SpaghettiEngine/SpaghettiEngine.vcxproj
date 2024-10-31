@@ -29,7 +29,6 @@
     <ClInclude Include="MaterialComponent.h" />
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="ModelLoader.h" />
-    <ClInclude Include="MyGui.h" />
     <ClInclude Include="Mywindow.h" />
     <ClInclude Include="PrimitiveGenerator.h" />
     <ClInclude Include="PrimitiveMenu.h" />
@@ -53,7 +52,6 @@
     <ClCompile Include="MaterialComponent.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
-    <ClCompile Include="MyGui.cpp" />
     <ClCompile Include="MyWindow.cpp" />
     <ClCompile Include="PrimitiveGenerator.cpp" />
     <ClCompile Include="Renderer.cpp" />

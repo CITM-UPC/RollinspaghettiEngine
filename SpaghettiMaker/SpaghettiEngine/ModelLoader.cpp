@@ -8,7 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path, const std::string& path2) {
+GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path, const std::string& texurepath) {
     // Create Assimp importer
     Assimp::Importer importer;
 
@@ -44,7 +44,7 @@ GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path, const 
     rootTransform->SetLocalScale(vec3(0.1));  // Scale down by default
 
     // Process the root node
-    ProcessNode(scene, scene_ai->mRootNode, scene_ai, rootObject, path2);
+    ProcessNode(scene, scene_ai->mRootNode, scene_ai, rootObject, texurepath);
 
     std::cout << "Loading model: " << path << std::endl;
     std::cout << "Number of meshes: " << scene_ai->mNumMeshes << std::endl;

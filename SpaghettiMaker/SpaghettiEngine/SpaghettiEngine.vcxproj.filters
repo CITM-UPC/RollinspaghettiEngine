@@ -60,9 +60,6 @@
     <ClInclude Include="InspectorWindow.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="MyGui.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="Mywindow.h">
       <Filter>ImGui</Filter>
     </ClInclude>
@@ -124,9 +121,6 @@
     </ClCompile>
     <ClCompile Include="InspectorWindow.cpp">
       <Filter>Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="MyGui.cpp">
-      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="MyWindow.cpp">
       <Filter>ImGui</Filter>
