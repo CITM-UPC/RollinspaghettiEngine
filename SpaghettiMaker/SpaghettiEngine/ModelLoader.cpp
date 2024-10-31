@@ -9,7 +9,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include "ConsoleWindow.h"
 
-GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path, const std::string& texurepath) {
+GameObject* ModelLoader::LoadModel(Scene* scene, const std::string& path, const std::string& texurepath) 
+{
     // Create Assimp importer
     Assimp::Importer importer;
 

@@ -366,12 +366,13 @@ int main(int argc, char** argv) {
     if (scene) {
         // Load initial model (baker house)
         const char* modelPath = "../SpaghettiEngine/BakerHouse.fbx";  // Adjust path as needed
-		const char* modeltexPath = "../SpaghettiEngine/Baker_house.png";  // Adjust path as needed
+		const char* texturePath = "../SpaghettiEngine/Baker_house.png";  // Adjust path as needed
 
-        GameObject* model = ModelLoader::LoadModel(scene, modelPath, modeltexPath);
+        GameObject* model = ModelLoader::LoadModel(scene, modelPath, texturePath);
         if (model) {
             std::cout << "Successfully loaded baker house model" << std::endl;
-
+            scene->SetSelectedGameObject(model);  // Auto-select the loaded model
+            scene->FocusOnGameObject(model);      // Focus camera on it
             // Optionally position the model
             if (auto transform = model->GetComponent<TransformComponent>()) {
                 transform->SetLocalPosition(vec3(0, 0, 0));
